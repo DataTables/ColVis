@@ -1,6 +1,6 @@
 /*
  * File:        ColVis.js
- * Version:     1.0.0 dev
+ * Version:     1.0.0
  * CVS:         $Id$
  * Description: Controls for column visiblity in DataTables
  * Author:      Allan Jardine (www.sprymedia.co.uk)
@@ -291,7 +291,7 @@ ColVis.prototype = {
 			'<span class="ColVis_title">'+oColumn.sTitle+'</span>';
 		
 		$(nButton).click( function (e) {
-			var showHide = $('input',this).attr('checked')==true ? false : true;
+			var showHide = $('input',this).attr('checked')===true ? false : true;
 			if ( e.target.nodeName.toLowerCase() == "input" )
 			{
 				showHide = $('input',this).attr('checked');
@@ -489,7 +489,7 @@ ColVis.prototype = {
 			} );
 			
 			$(this.dom.background).animate({"opacity": 0}, 500, function (e) {
-				this.parentNode.removeChild( this );
+				document.body.removeChild( that.dom.background );
 				document.body.removeChild( that.dom.catcher );
 			} );
 		}
@@ -519,8 +519,8 @@ ColVis.prototype.CLASS = "ColVis";
  *  @type      String
  *  @default   1.0.0
  */
-ColVis.prototype.VERSION = "1.0.0";
 ColVis.VERSION = "1.0.0";
+ColVis.prototype.VERSION = ColVis.VERSION;
 
 
 
