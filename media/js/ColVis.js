@@ -65,6 +65,14 @@ ColVis = function( oDTSettings )
 		"buttonText": "Show / hide columns",
 		
 		/**
+		 * Flag to say if the collection is hidden
+		 *  @property hidden
+		 *  @type     boolean
+		 *  @default  true
+		 */
+		"hidden": true,
+		
+		/**
 		 * List of columns (integers) which should be excluded from the list
 		 *  @property aiExclude
 		 *  @type     Array
@@ -469,6 +477,8 @@ ColVis.prototype = {
 			$(nHidden).animate({"opacity": 1}, 500);
 			$(nBackground).animate({"opacity": 1}, 500);
 		}, 10 );
+		
+		this.s.hidden = false;
 	},
 	
 	
@@ -482,8 +492,10 @@ ColVis.prototype = {
 	{
 		var that = this;
 		
-		if ( this.dom.collection !== null )
+		if ( !this.s.hidden && this.dom.collection !== null )
 		{
+			this.s.hidden = true;
+			
 			$(this.dom.collection).animate({"opacity": 0}, 500, function (e) {
 				this.style.display = "none";
 			} );
