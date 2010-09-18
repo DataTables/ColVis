@@ -70,16 +70,7 @@ ColVis = function( oDTSettings )
 		 *  @type     Array
 		 *  @default  []
 		 */
-		"aiExclude": [],
-		
-		/**
-		 * Indicator used when mouseover activation is used, to allow the background mouseover 
-		 * event to hide the list.
-		 *  @property overcollection
-		 *  @type     boolean
-		 *  @default  false
-		 */
-		"overcollection": false
+		"aiExclude": []
 	};
 	
 	
@@ -118,6 +109,14 @@ ColVis = function( oDTSettings )
 		 *  @default  null
 		 */
 		"background": null,
+		
+		/**
+		 * Element to position over the activation button to catch mouse events when using mouseover
+		 *  @property catcher
+		 *  @type     Node
+		 *  @default  null
+		 */
+		"catcher": null,
 		
 		/**
 		 * List of button elements
@@ -168,6 +167,7 @@ ColVis.prototype = {
 		this.dom.button = this._fnDomBaseButton( this.s.buttonText );
 		this.dom.wrapper.appendChild( this.dom.button );
 		
+		this.dom.catcher = this._fnDomCatcher();
 		this.dom.collection = this._fnDomCollection();
 		this.dom.background = this._fnDomBackground();
 		
@@ -340,6 +340,7 @@ ColVis.prototype = {
 	 */
 	"_fnDomCollection": function ()
 	{
+		var that = this;
 		var nHidden = document.createElement('div');
 		nHidden.style.display = "none";
 		nHidden.className = !this.s.dt.bJUI ? "ColVis_collection TableTools_collection" :
@@ -348,6 +349,27 @@ ColVis.prototype = {
 		$(nHidden).css('opacity', 0);
 		
 		return nHidden;
+	},
+	
+	
+	/**
+	 * An element to be placed on top of the activate button to catch events
+	 *  @method  _fnDomCatcher
+	 *  @returns {Node} div container for the collection
+	 *  @private 
+	 */
+	"_fnDomCatcher": function ()
+	{
+		var 
+			that = this,
+			nCatcher = document.createElement('div');
+		nCatcher.className = "ColVis_catcher TableTools_catcher";
+		
+		$(nCatcher).click( function () {
+			that._fnCollectionHide.call( that, null, null );
+		} );
+		
+		return nCatcher;
 	},
 	
 	
@@ -370,27 +392,18 @@ ColVis.prototype = {
 		$(nBackground).css('opacity', 0);
 		
 		$(nBackground).click( function () {
-			that.s.overcollection = false;
 			that._fnCollectionHide.call( that, null, null );
 		} );
 		
 		/* When considering a mouse over action for the activation, we also consider a mouse out
 		 * which is the same as a mouse over the background - without all the messing around of
-		 * bubbling events. So here we use s.overcollection to know if we should close the view
-		 * when the mouse goes over the background (since it will be when activated!)
+		 * bubbling events. Use the catcher element to avoid messing around with bubbling
 		 */
 		if ( this.s.activate == "mouseover" )
 		{
 			$(nBackground).mouseover( function () {
-				if ( that.s.overcollection )
-				{
-					that.s.overcollection = false;
-					that._fnCollectionHide.call( that, null, null );
-				}
-			} );
-			
-			$(that.dom.collection).mouseover( function () {
-				that.s.overcollection = true;
+				that.s.overcollection = false;
+				that._fnCollectionHide.call( that, null, null );
 			} );
 		}
 		
@@ -410,8 +423,8 @@ ColVis.prototype = {
 		var oPos = $(this.dom.button).offset();
 		var nHidden = this.dom.collection;
 		var nBackground = this.dom.background;
-		var iDivX = oPos.left;
-		var iDivY = oPos.top + $(this.dom.button).outerHeight();
+		var iDivX = parseInt(oPos.left, 10);
+		var iDivY = parseInt(oPos.top + $(this.dom.button).outerHeight(), 10);
 		
 		nHidden.style.left = iDivX+"px";
 		nHidden.style.top = iDivY+"px";
@@ -424,8 +437,15 @@ ColVis.prototype = {
 		nBackground.style.height = ((iWinHeight>iDocHeight)? iWinHeight : iDocHeight) +"px";
 		nBackground.style.width = ((iWinWidth>iDocWidth)? iWinWidth : iDocWidth) +"px";
 		
+		var oStyle = this.dom.catcher.style;
+		oStyle.height = $(this.dom.button).outerHeight()+"px";
+		oStyle.width = $(this.dom.button).outerWidth()+"px";
+		oStyle.top = oPos.top+"px";
+		oStyle.left = iDivX+"px";
+		
 		document.body.appendChild( nBackground );
 		document.body.appendChild( nHidden );
+		document.body.appendChild( this.dom.catcher );
 		
 		/* Visual corrections to try and keep the collection visible */
 		var iDivWidth = $(nHidden).outerWidth();
@@ -460,6 +480,8 @@ ColVis.prototype = {
 	 */
 	"_fnCollectionHide": function (  )
 	{
+		var that = this;
+		
 		if ( this.dom.collection !== null )
 		{
 			$(this.dom.collection).animate({"opacity": 0}, 500, function (e) {
@@ -468,6 +490,7 @@ ColVis.prototype = {
 			
 			$(this.dom.background).animate({"opacity": 0}, 500, function (e) {
 				this.parentNode.removeChild( this );
+				document.body.removeChild( that.dom.catcher );
 			} );
 		}
 	}

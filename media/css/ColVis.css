@@ -35,12 +35,12 @@ div.TableTools_collectionBackground {
 }
 
 div.TableTools_collection {
+	position: relative;
 	width: 150px;
 	background-color: #f3f3f3;
 	padding: 3px;
 	border: 1px solid #ccc;
-	overflow: hidden;
-	z-index: 1101;
+	z-index: 1102;
 }
 
 div.TableTools_collection button.TableTools_Button {
@@ -48,6 +48,11 @@ div.TableTools_collection button.TableTools_Button {
 	width: 100%;
 	float: none;
 	margin-bottom: 2px;
+}
+
+div.TableTools_catcher {
+	position: absolute;
+	z-index: 1101;
 }
 
 .disabled {
