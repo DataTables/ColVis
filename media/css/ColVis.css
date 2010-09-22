@@ -30,7 +30,7 @@ button.TableTools_Button::-moz-focus-inner {
 }
 
 div.TableTools_collectionBackground {
-	background: url('../images/background.png') repeat top left;
+	background-color: black;
 	z-index: 1100;
 }
 

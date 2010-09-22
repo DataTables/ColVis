@@ -294,9 +294,9 @@ ColVis.prototype = {
 		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
 			"ColVis_Button TableTools_Button ui-button ui-state-default";
 		nButton.appendChild( nSpan );
-		nSpan.innerHTML = 
+		$(nSpan).html(
 			'<span class="ColVis_radio"><input type="checkbox"></span>'+
-			'<span class="ColVis_title">'+oColumn.sTitle+'</span>';
+			'<span class="ColVis_title">'+oColumn.sTitle+'</span>' );
 		
 		$(nButton).click( function (e) {
 			var showHide = $('input',this).attr('checked')===true ? false : true;
@@ -443,7 +443,7 @@ ColVis.prototype = {
 		 	iWinWidth = $(window).width(), iDocWidth = $(document).width();
 		
 		nBackground.style.height = ((iWinHeight>iDocHeight)? iWinHeight : iDocHeight) +"px";
-		nBackground.style.width = ((iWinWidth>iDocWidth)? iWinWidth : iDocWidth) +"px";
+		nBackground.style.width = ((iWinWidth<iDocWidth)? iWinWidth : iDocWidth) +"px";
 		
 		var oStyle = this.dom.catcher.style;
 		oStyle.height = $(this.dom.button).outerHeight()+"px";
@@ -475,7 +475,7 @@ ColVis.prototype = {
 		 */
 		setTimeout( function () {
 			$(nHidden).animate({"opacity": 1}, 500);
-			$(nBackground).animate({"opacity": 1}, 500);
+			$(nBackground).animate({"opacity": 0.1}, 500);
 		}, 10 );
 		
 		this.s.hidden = false;
