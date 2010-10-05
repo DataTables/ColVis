@@ -475,7 +475,15 @@ ColVis.prototype = {
 		 */
 		setTimeout( function () {
 			$(nHidden).animate({"opacity": 1}, 500);
-			$(nBackground).animate({"opacity": 0.1}, 500);
+			$(nBackground).animate({"opacity": 0.1}, 500, 'linear', function () {
+				/* In IE6 if you set the checked attribute of a hidden checkbox, then this is not visually
+				 * reflected. As such, we need to do it here, once it is visible. Unbelievable.
+				 */
+				if ( jQuery.browser.msie && jQuery.browser.version == "6.0" )
+				{
+					that._fnDrawCallback();
+				}
+			});
 		}, 10 );
 		
 		this.s.hidden = false;
