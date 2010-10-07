@@ -492,7 +492,7 @@ ColVis.prototype = {
 		
 		if ( iDivY + iDivHeight > iDocHeight )
 		{
-			nHidden.style.top = (iDivY-iDivHeight-$(nButton).outerHeight())+"px";
+			nHidden.style.top = (iDivY-iDivHeight-$(this.dom.button).outerHeight())+"px";
 		}
 		
 		
