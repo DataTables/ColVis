@@ -304,10 +304,36 @@ ColVis.prototype = {
 			{
 				showHide = $('input',this).attr('checked');
 			}
+			
+			/* Need to consider the case where the initialiser created more than one table - change the
+			 * API index that DataTables is using
+			 */
+			var oldIndex = $.fn.dataTableExt.iApiIndex;
+			$.fn.dataTableExt.iApiIndex = that._fnDataTablesApiIndex.call(that);
 			that.s.dt.oInstance.fnSetColumnVis( i, showHide );
+			$.fn.dataTableExt.iApiIndex = oldIndex; /* Restore */
 		} );
 		
 		return nButton;
+	},
+	
+	
+	/**
+	 * Get the position in the DataTables instance array of the table for this instance of ColVis
+	 *  @method  _fnDataTablesApiIndex
+	 *  @returns {int} Index
+	 *  @private 
+	 */
+	"_fnDataTablesApiIndex": function ()
+	{
+		for ( var i=0, iLen=this.s.dt.oInstance.length ; i<iLen ; i++ )
+		{
+			if ( this.s.dt.oInstance[i] == this.s.dt.nTable )
+			{
+				return i;
+			}
+		}
+		return 0;
 	},
 	
 	
