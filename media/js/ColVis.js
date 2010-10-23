@@ -1,6 +1,6 @@
 /*
  * File:        ColVis.js
- * Version:     1.0.2
+ * Version:     1.0.3.dev
  * CVS:         $Id$
  * Description: Controls for column visiblity in DataTables
  * Author:      Allan Jardine (www.sprymedia.co.uk)
@@ -151,6 +151,27 @@ ColVis.prototype = {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Public methods
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	/**
+	 * Rebuild the list of buttons for this instance (i.e. if there is a column header update)
+	 *  @method  fnRebuild
+	 *  @returns void
+	 */
+	"fnRebuild": function ()
+	{
+		/* Remove the old buttons */
+		for ( var i=this.dom.buttons.length-1 ; i>=0 ; i-- )
+		{
+			this.dom.collection.removeChild( this.dom.buttons[i] )
+		}
+		this.dom.buttons.splice( 0, this.dom.buttons.length );
+		
+		/* Re-add them (this is not the optimal way of doing this, it is fast and effective) */
+		this._fnAddButtons();
+		
+		/* Update the checkboxes */
+		this._fnDrawCallback();
+	},
 	
 	
 	
@@ -547,6 +568,55 @@ ColVis.prototype = {
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Static object methods
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/**
+ * Rebuild the collection for a given table, or all tables if no parameter given
+ *  @method  ColVis.fnRebuild
+ *  @static
+ *  @param   object oTable DataTable instance to consider - optional
+ *  @returns void
+ */
+ColVis.fnRebuild = function ( oTable )
+{
+	var nTable = null;
+	if ( typeof oTable != 'undefined' )
+	{
+		nTable = oTable.fnSettings().nTable;
+	}
+	
+	for ( var i=0, iLen=ColVis.aInstances.length ; i<iLen ; i++ )
+	{
+		if ( typeof oTable == 'undefined' || nTable == ColVis.aInstances[i].s.dt.nTable )
+		{
+			ColVis.aInstances[i].fnRebuild();
+		}
+	}
+};
+
+
+
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Static object propterties
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/**
+ * Collection of all ColVis instances
+ *  @property ColVis.aInstances
+ *  @static
+ *  @type     Array
+ *  @default  []
+ */
+ColVis.aInstances = [];
+
+
+
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Constants
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -563,9 +633,9 @@ ColVis.prototype.CLASS = "ColVis";
  * ColVis version
  *  @constant  VERSION
  *  @type      String
- *  @default   1.0.2
+ *  @default   1.0.3.dev
  */
-ColVis.VERSION = "1.0.2";
+ColVis.VERSION = "1.0.3.dev";
 ColVis.prototype.VERSION = ColVis.VERSION;
 
 
@@ -585,8 +655,9 @@ if ( typeof $.fn.dataTable == "function" &&
 {
 	$.fn.dataTableExt.aoFeatures.push( {
 		"fnInit": function( oDTSettings ) {
-			var tt = new ColVis( oDTSettings );
-			return tt.dom.wrapper;
+			var oColvis = new ColVis( oDTSettings );
+			ColVis.aInstances.push( oColvis );
+			return oColvis.dom.wrapper;
 		},
 		"cFeature": "C",
 		"sFeature": "ColVis"
@@ -596,4 +667,5 @@ else
 {
 	alert( "Warning: ColVis requires DataTables 1.7 or greater - www.datatables.net/download");
 }
+
 })(jQuery);
