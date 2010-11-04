@@ -7,8 +7,9 @@
 		<title>ColVis example</title>
 		<style type="text/css" title="currentStyle">
 			@import "../../media/css/demo_page.css";
-			@import "../../media/css/demo_table.css";
-			@import "media/css/ColVis.css";
+			@import "../../media/css/demo_table_jui.css";
+			@import "../../examples/examples_support/themes/smoothness/jquery-ui-1.8.4.custom.css";
+			@import "media/css/ColVisAlt.css";
 		</style>
 		<script type="text/javascript" charset="utf-8" src="../../media/js/jquery.js"></script>
 		<script type="text/javascript" charset="utf-8" src="../../media/js/jquery.dataTables.js"></script>
@@ -16,9 +17,26 @@
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
 				$('#example').dataTable( {
-					"sDom": 'C<"clear">lfrtip',
+					"sDom": '<"H"fr>tC<"F"ip>',
+					"bJQueryUI": true,
+					"bPaginate": false,
+					"sScrollY": "200px",
+					"bScrollCollapse": true,
+					"bScrollAutoCss": false,
+					"aoColumnDefs": [
+						{ "bVisible": false, "aTargets": [ 2 ] }
+					],
 					"oColVis": {
-						"aiExclude": [ 0 ]
+						"buttonText": "&nbsp;",
+						"bRestore": true,
+						"sAlign": "right"
+					},
+					"fnDrawCallback": function (o) {
+						/* Position the ColVis button as needed */
+						var nColVis = $('div.ColVis', o.nTableWrapper)[0];
+						nColVis.style.width = o.oScroll.iBarWidth+"px";
+						nColVis.style.top = ($('div.dataTables_scroll', o.nTableWrapper).position().top)+"px";
+						nColVis.style.height = ($('div.dataTables_scrollHead table', o.nTableWrapper).height())+"px";
 					}
 				} );
 			} );
@@ -27,15 +45,12 @@
 	<body id="dt_example">
 		<div id="container">
 			<div class="full_width big">
-				ColVis example - exclude columns from list
+				ColVis example with alternative styling
 			</div>
 			
 			<h1>Preamble</h1>
-			<p>It can at times be useful to exclude columns from being in the 'show / hide' list (for
-				example if you have hidden information that the end user shouldn't be able to make
-				visible. This can be done by the oColVis.aiExclude initialisation parameter when creating
-				the DataTable. This is simply an array of integers, indicating which columns should
-				be excluded. This example shows the first column being excluded.</p>
+			<p>This demo of ColVis shows a number of different features of the plug-in. Firstly, it shows alternative styling of the plug-in with the button nested just above the scrollbar in the DataTable. Secondly there is a "Restore" button in the ColVis drop down, which will restore the original visibility settings when the table was initialised (this is controlled by using the "bRestore" option). Finally it shows that the drop down can be set to align on the right of the button, rather than the left.</p>
+			<p>Note that this demo requires DataTables 1.7.5 or later.</p>
 			
 			<h1>Live example</h1>
 			<form>
@@ -481,9 +496,26 @@
 			<h1>Initialisation code</h1>
 			<pre>$(document).ready( function () {
 	$('#example').dataTable( {
-		"sDom": 'C&lt;"clear"&gt;lfrtip',
+		"sDom": '&lt;"H"fr&gt;tC&lt;"F"ip&gt;',
+		"bJQueryUI": true,
+		"bPaginate": false,
+		"sScrollY": "200px",
+		"bScrollCollapse": true,
+		"bScrollAutoCss": false,
+		"aoColumnDefs": [
+			{ "bVisible": false, "aTargets": [ 2 ] }
+		],
 		"oColVis": {
-			"aiExclude": [ 0 ]
+			"buttonText": "&amp;nbsp;",
+			"bRestore": true,
+			"sAlign": "left"
+		},
+		"fnDrawCallback": function (o) {
+			/* Position the ColVis button as needed */
+			var nColVis = $('div.ColVis', o.nTableWrapper)[0];
+			nColVis.style.width = o.oScroll.iBarWidth+"px";
+			nColVis.style.top = ($('div.dataTables_scroll', o.nTableWrapper).position().top)+"px";
+			nColVis.style.height = ($('div.dataTables_scrollHead table', o.nTableWrapper).height())+"px";
 		}
 	} );
 } );</pre>
