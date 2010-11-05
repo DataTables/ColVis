@@ -199,7 +199,10 @@ ColVis.prototype = {
 		/* Remove the old buttons */
 		for ( var i=this.dom.buttons.length-1 ; i>=0 ; i-- )
 		{
-			this.dom.collection.removeChild( this.dom.buttons[i] )
+			if ( this.dom.buttons[i] !== null )
+			{
+				this.dom.collection.removeChild( this.dom.buttons[i] );
+			}
 		}
 		this.dom.buttons.splice( 0, this.dom.buttons.length );
 		
