@@ -23,12 +23,17 @@
  * @constructor
  * @param {object} DataTables settings object
  */
-ColVis = function( oDTSettings )
+ColVis = function( oDTSettings, oInit )
 {
 	/* Santiy check that we are a new instance */
 	if ( !this.CLASS || this.CLASS != "ColVis" )
 	{
 		alert( "Warning: ColVis must be initialised with the keyword 'new'" );
+	}
+	
+	if ( typeof oInit == 'undefined' )
+	{
+		oInit = {};
 	}
 	
 	
@@ -47,6 +52,22 @@ ColVis = function( oDTSettings )
 		 *  @default  null
 		 */
 		"dt": null,
+		
+		/**
+		 * Customisation object
+		 *  @property oInit
+		 *  @type     Object
+		 *  @default  passed in
+		 */
+		"oInit": oInit,
+		
+		/**
+		 * Callback function to tell the user when the state has changed
+		 *  @property fnStateChange
+		 *  @type     function
+		 *  @default  null
+		 */
+		"fnStateChange": null,
 		
 		/**
 		 * Mode of activation. Can be 'click' or 'mouseover'
@@ -175,6 +196,8 @@ ColVis = function( oDTSettings )
 		"restore": null
 	};
 	
+	/* Store global reference */
+	ColVis.aInstances.push( this );
 	
 	/* Constructor logic */
 	this.s.dt = oDTSettings;
@@ -272,39 +295,41 @@ ColVis.prototype = {
 	 */
 	"_fnApplyCustomisation": function ()
 	{
-		if ( typeof this.s.dt.oInit.oColVis != 'undefined' )
+		var oConfig = this.s.oInit;
+		
+		if ( typeof oConfig.activate != 'undefined' )
 		{
-			var oConfig = this.s.dt.oInit.oColVis;
-			
-			if ( typeof oConfig.activate != 'undefined' )
-			{
-				this.s.activate = oConfig.activate;
-			}
-			
-			if ( typeof oConfig.buttonText != 'undefined' )
-			{
-				this.s.buttonText = oConfig.buttonText;
-			}
-			
-			if ( typeof oConfig.aiExclude != 'undefined' )
-			{
-				this.s.aiExclude = oConfig.aiExclude;
-			}
-			
-			if ( typeof oConfig.bRestore != 'undefined' )
-			{
-				this.s.bRestore = oConfig.bRestore;
-			}
-			
-			if ( typeof oConfig.sRestore != 'undefined' )
-			{
-				this.s.sRestore = oConfig.sRestore;
-			}
-			
-			if ( typeof oConfig.sAlign != 'undefined' )
-			{
-				this.s.sAlign = oConfig.sAlign;
-			}
+			this.s.activate = oConfig.activate;
+		}
+		
+		if ( typeof oConfig.buttonText != 'undefined' )
+		{
+			this.s.buttonText = oConfig.buttonText;
+		}
+		
+		if ( typeof oConfig.aiExclude != 'undefined' )
+		{
+			this.s.aiExclude = oConfig.aiExclude;
+		}
+		
+		if ( typeof oConfig.bRestore != 'undefined' )
+		{
+			this.s.bRestore = oConfig.bRestore;
+		}
+		
+		if ( typeof oConfig.sRestore != 'undefined' )
+		{
+			this.s.sRestore = oConfig.sRestore;
+		}
+		
+		if ( typeof oConfig.sAlign != 'undefined' )
+		{
+			this.s.sAlign = oConfig.sAlign;
+		}
+		
+		if ( typeof oConfig.fnStateChange != 'undefined' )
+		{
+			this.s.fnStateChange = oConfig.fnStateChange;
 		}
 	},
 	
@@ -439,6 +464,11 @@ ColVis.prototype = {
 			$.fn.dataTableExt.iApiIndex = that._fnDataTablesApiIndex.call(that);
 			that.s.dt.oInstance.fnSetColumnVis( i, showHide );
 			$.fn.dataTableExt.iApiIndex = oldIndex; /* Restore */
+			
+			if ( that.s.fnStateChange !== null )
+			{
+				that.s.fnStateChange.call( that, i, showHide );
+			}
 		} );
 		
 		return nButton;
@@ -764,8 +794,9 @@ if ( typeof $.fn.dataTable == "function" &&
 {
 	$.fn.dataTableExt.aoFeatures.push( {
 		"fnInit": function( oDTSettings ) {
-			var oColvis = new ColVis( oDTSettings );
-			ColVis.aInstances.push( oColvis );
+			var init = (typeof oDTSettings.oInit.oColVis == 'undefined') ?
+				{} : oDTSettings.oInit.oColVis;
+			var oColvis = new ColVis( oDTSettings, init );
 			return oColvis.dom.wrapper;
 		},
 		"cFeature": "C",
