@@ -138,12 +138,12 @@ ColVis = function( oDTSettings, oInit )
 		"sRestore": "Restore original",
 		
 		/**
-		 * Overlay animation length in ms (integer)
-		 *  @property iOverlay
+		 * Overlay animation duration in mS
+		 *  @property iOverlayFade
 		 *  @type     Integer
 		 *  @default  500
 		 */
-		"iOverlay": 500
+		"iOverlayFade": 500
 	};
 	
 	
@@ -344,9 +344,9 @@ ColVis.prototype = {
 			this.s.fnStateChange = oConfig.fnStateChange;
 		}
 		
-		if ( typeof oConfig.iOverlay != 'undefined' )
+		if ( typeof oConfig.iOverlayFade != 'undefined' )
 		{
-			this.s.iOverlay = oConfig.iOverlay;
+			this.s.iOverlayFade = oConfig.iOverlayFade;
 		}
 	},
 	
@@ -677,8 +677,8 @@ ColVis.prototype = {
 		 * much smoother. If you don't want the animation, then the setTimeout can be removed
 		 */
 		setTimeout( function () {
-			$(nHidden).animate({"opacity": 1}, that.s.iOverlay);
-			$(nBackground).animate({"opacity": 0.1}, that.s.iOverlay, 'linear', function () {
+			$(nHidden).animate({"opacity": 1}, that.s.iOverlayFade);
+			$(nBackground).animate({"opacity": 0.1}, that.s.iOverlayFade, 'linear', function () {
 				/* In IE6 if you set the checked attribute of a hidden checkbox, then this is not visually
 				 * reflected. As such, we need to do it here, once it is visible. Unbelievable.
 				 */
@@ -707,11 +707,11 @@ ColVis.prototype = {
 		{
 			this.s.hidden = true;
 			
-			$(this.dom.collection).animate({"opacity": 0}, that.s.iOverlay, function (e) {
+			$(this.dom.collection).animate({"opacity": 0}, that.s.iOverlayFade, function (e) {
 				this.style.display = "none";
 			} );
 			
-			$(this.dom.background).animate({"opacity": 0}, that.s.iOverlay, function (e) {
+			$(this.dom.background).animate({"opacity": 0}, that.s.iOverlayFade, function (e) {
 				document.body.removeChild( that.dom.background );
 				document.body.removeChild( that.dom.catcher );
 			} );
