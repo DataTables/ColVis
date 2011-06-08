@@ -343,6 +343,11 @@ ColVis.prototype = {
 		{
 			this.s.fnStateChange = oConfig.fnStateChange;
 		}
+		
+		if ( typeof oConfig.iOverlay != 'undefined' )
+		{
+			this.s.iOverlay = oConfig.iOverlay;
+		}
 	},
 	
 	
