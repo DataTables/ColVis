@@ -682,11 +682,6 @@ ColVis.prototype = {
 			nHidden.style.left = (iDocWidth-iDivWidth)+"px";
 		}
 		
-		if ( iDivY + iDivHeight > iDocHeight )
-		{
-			nHidden.style.top = (iDivY-iDivHeight-$(this.dom.button).outerHeight())+"px";
-		}
-		
 		
 		/* This results in a very small delay for the end user but it allows the animation to be
 		 * much smoother. If you don't want the animation, then the setTimeout can be removed
