@@ -18,7 +18,9 @@
 				$('#example').dataTable( {
 					"sDom": 'C<"clear">lfrtip',
 					"oColVis": {
-						"buttonText": "Change columns"
+					  "fnLabel": function ( index, title, th ) {
+					    return (index+1) +'. '+ title;
+					  }
 					}
 				} );
 			} );
@@ -27,12 +29,11 @@
 	<body id="dt_example">
 		<div id="container">
 			<div class="full_width big">
-				ColVis example - custom text
+				ColVis example
 			</div>
 			
 			<h1>Preamble</h1>
-			<p>You may wish to use your own text in the ColVis button - this is done by making use of
-				the oColVis.buttonText DataTables initialisation parameter, as shown in this example.</p>
+			<p>By default ColVis will use the information in the TH cell for each column as the button name to use in ColVis, which might not always be what you want (for example you might has HTML in the cell that you don't want in the button). The <i>fnLabel</i> callback provides the ability to customise the label used for the button. In this example the column index is prefixed to the column title.</p>
 			
 			<h1>Live example</h1>
 			<form>
@@ -482,7 +483,9 @@
 	$('#example').dataTable( {
 		"sDom": 'C&lt;"clear"&gt;lfrtip',
 		"oColVis": {
-			"buttonText": "Change columns"
+		  "fnLabel": function ( index, title, th ) {
+		    return (index+1) +'. '+ title;
+		  }
 		}
 	} );
 } );</pre>

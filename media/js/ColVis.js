@@ -143,7 +143,16 @@ ColVis = function( oDTSettings, oInit )
 		 *  @type     Integer
 		 *  @default  500
 		 */
-		"iOverlayFade": 500
+		"iOverlayFade": 500,
+		
+		/**
+		 * Label callback for column names. Takes three parameters: 1. the column index, 2. the column
+		 * title detected by DataTables and 3. the TH node for the column
+		 *  @property fnLabel
+		 *  @type     Function
+		 *  @default  null
+		 */
+		"fnLabel": null
 	};
 	
 	
@@ -348,6 +357,11 @@ ColVis.prototype = {
 		{
 			this.s.iOverlayFade = oConfig.iOverlayFade;
 		}
+		
+		if ( typeof oConfig.fnLabel != 'undefined' )
+		{
+			this.s.fnLabel = oConfig.fnLabel;
+		}
 	},
 	
 	
@@ -463,9 +477,10 @@ ColVis.prototype = {
 		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
 			"ColVis_Button TableTools_Button ui-button ui-state-default";
 		nButton.appendChild( nSpan );
+		var sTitle = this.s.fnLabel===null ? oColumn.sTitle : this.s.fnLabel( i, oColumn.sTitle, oColumn.nTh );
 		$(nSpan).html(
 			'<span class="ColVis_radio"><input type="checkbox"></span>'+
-			'<span class="ColVis_title">'+oColumn.sTitle+'</span>' );
+			'<span class="ColVis_title">'+sTitle+'</span>' );
 		
 		$(nButton).click( function (e) {
 			var showHide = !$('input', this).is(":checked");
