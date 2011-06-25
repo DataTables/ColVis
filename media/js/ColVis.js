@@ -152,7 +152,16 @@ ColVis = function( oDTSettings, oInit )
 		 *  @type     Function
 		 *  @default  null
 		 */
-		"fnLabel": null
+		"fnLabel": null,
+		
+		/**
+		 * Indicate if ColVis should automatically calculate the size of buttons or not. The default
+		 * is for it to do so. Set to "css" to disable the automatic sizing
+		 *  @property sSize
+		 *  @type     String
+		 *  @default  auto
+		 */
+		"sSize": "auto"
 	};
 	
 	
@@ -642,7 +651,7 @@ ColVis.prototype = {
 	 */
 	"_fnCollectionShow": function ()
 	{
-		var that = this;
+		var that = this, i, iLen;
 		var oPos = $(this.dom.button).offset();
 		var nHidden = this.dom.collection;
 		var nBackground = this.dom.background;
@@ -669,6 +678,24 @@ ColVis.prototype = {
 		document.body.appendChild( nBackground );
 		document.body.appendChild( nHidden );
 		document.body.appendChild( this.dom.catcher );
+		
+		/* Resize the buttons */
+		if ( this.s.sSize == "auto" )
+		{
+			var aiSizes = [];
+			this.dom.collection.style.width = "auto";
+			for ( i=0, iLen=this.dom.buttons.length ; i<iLen ; i++ )
+			{
+				this.dom.buttons[i].style.width = "auto";
+				aiSizes.push( $(this.dom.buttons[i]).outerWidth() );
+			}
+			iMax = Math.max.apply(window, aiSizes);
+			for ( i=0, iLen=this.dom.buttons.length ; i<iLen ; i++ )
+			{
+				this.dom.buttons[i].style.width = iMax+"px";
+			}
+			this.dom.collection.style.width = iMax+"px";
+		}
 		
 		/* Visual corrections to try and keep the collection visible */
 		nHidden.style.left = this.s.sAlign=="left" ?
