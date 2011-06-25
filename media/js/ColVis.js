@@ -468,10 +468,10 @@ ColVis.prototype = {
 			'<span class="ColVis_title">'+oColumn.sTitle+'</span>' );
 		
 		$(nButton).click( function (e) {
-			var showHide = $('input',this).attr('checked')===true ? false : true;
+			var showHide = !$('input', this).is(":checked");
 			if ( e.target.nodeName.toLowerCase() == "input" )
 			{
-				showHide = $('input',this).attr('checked');
+				showHide = $('input', this).is(":checked");
 			}
 			
 			/* Need to consider the case where the initialiser created more than one table - change the
