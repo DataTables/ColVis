@@ -371,6 +371,11 @@ ColVis.prototype = {
 		{
 			this.s.fnLabel = oConfig.fnLabel;
 		}
+
+		if ( typeof oConfig.sSize != 'undefined' )
+		{
+			this.s.sSize = oConfig.sSize;
+		}
 	},
 	
 	
