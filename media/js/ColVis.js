@@ -1,6 +1,6 @@
 /*
  * File:        ColVis.js
- * Version:     1.0.6
+ * Version:     1.0.6.dev
  * CVS:         $Id$
  * Description: Controls for column visiblity in DataTables
  * Author:      Allan Jardine (www.sprymedia.co.uk)
@@ -487,8 +487,8 @@ ColVis.prototype = {
 	{
 		var
 			that = this,
-		  nButton = document.createElement('button'),
-		  nSpan = document.createElement('span');
+			nButton = document.createElement('button'),
+			nSpan = document.createElement('span');
 		
 		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
 			"ColVis_Button TableTools_Button ui-button ui-state-default";
@@ -517,8 +517,8 @@ ColVis.prototype = {
 	{
 		var
 			that = this,
-		  nButton = document.createElement('button'),
-		  nSpan = document.createElement('span');
+			nButton = document.createElement('button'),
+			nSpan = document.createElement('span');
 		
 		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
 			"ColVis_Button TableTools_Button ui-button ui-state-default";
@@ -528,7 +528,8 @@ ColVis.prototype = {
 		$(nButton).click( function (e) {
 			for ( var i=0, iLen=that.s.abOriginal.length ; i<iLen ; i++ )
 			{
-				if (that.s.aiExclude.indexOf(i) === -1) {
+				if (that.s.aiExclude.indexOf(i) === -1)
+				{
 					that.s.dt.oInstance.fnSetColumnVis( i, true, false );
 				}
 			}
@@ -537,6 +538,7 @@ ColVis.prototype = {
 		
 		return nButton;
 	},
+	
 	
 	/**
 	 * Create the DOM for a show / hide button
@@ -550,8 +552,8 @@ ColVis.prototype = {
 		var
 			that = this,
 			oColumn = this.s.dt.aoColumns[i],
-		  nButton = document.createElement('button'),
-		  nSpan = document.createElement('span');
+			nButton = document.createElement('button'),
+			nSpan = document.createElement('span');
 		
 		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
 			"ColVis_Button TableTools_Button ui-button ui-state-default";
@@ -616,8 +618,8 @@ ColVis.prototype = {
 	{
 		var
 			that = this,
-		  nButton = document.createElement('button'),
-		  nSpan = document.createElement('span'),
+			nButton = document.createElement('button'),
+			nSpan = document.createElement('span'),
 			sEvent = this.s.activate=="mouseover" ? "mouseover" : "click";
 		
 		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
@@ -904,7 +906,7 @@ ColVis.prototype.CLASS = "ColVis";
  *  @type      String
  *  @default   See code
  */
-ColVis.VERSION = "1.0.6";
+ColVis.VERSION = "1.0.6.dev";
 ColVis.prototype.VERSION = ColVis.VERSION;
 
 
