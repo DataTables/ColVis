@@ -1,6 +1,6 @@
 /*
  * File:        ColVis.js
- * Version:     1.0.6.dev
+ * Version:     1.0.6
  * CVS:         $Id$
  * Description: Controls for column visiblity in DataTables
  * Author:      Allan Jardine (www.sprymedia.co.uk)
@@ -120,6 +120,22 @@ ColVis = function( oDTSettings, oInit )
 		 *  @default  []
 		 */
 		"abOriginal": [],
+		
+		/**
+		 * Show Show-All button
+		 *  @property bShowAll
+		 *  @type     Array
+		 *  @default  []
+		 */
+		"bShowAll": false,
+		
+		/**
+		 * Show All button text
+		 *  @property sShowAll
+		 *  @type     String
+		 *  @default  Restore original
+		 */
+		"sShowAll": "Show All",
 		
 		/**
 		 * Show restore button
@@ -352,6 +368,16 @@ ColVis.prototype = {
 			this.s.sRestore = oConfig.sRestore;
 		}
 		
+		if ( typeof oConfig.bShowAll != 'undefined' )
+		{
+			this.s.bShowAll = oConfig.bShowAll;
+		}
+		
+		if ( typeof oConfig.sShowAll != 'undefined' )
+		{
+			this.s.sShowAll = oConfig.sShowAll;
+		}
+		
 		if ( typeof oConfig.sAlign != 'undefined' )
 		{
 			this.s.sAlign = oConfig.sAlign;
@@ -371,7 +397,7 @@ ColVis.prototype = {
 		{
 			this.s.fnLabel = oConfig.fnLabel;
 		}
-
+		
 		if ( typeof oConfig.sSize != 'undefined' )
 		{
 			this.s.sSize = oConfig.sSize;
@@ -440,6 +466,14 @@ ColVis.prototype = {
 			this.dom.buttons.push( nButton );
 			this.dom.collection.appendChild( nButton );
 		}
+		
+		if ( this.s.bShowAll )
+		{
+			nButton = this._fnDomShowAllButton();
+			nButton.className += " ColVis_ShowAll";
+			this.dom.buttons.push( nButton );
+			this.dom.collection.appendChild( nButton );
+		}
 	},
 	
 	
@@ -472,6 +506,37 @@ ColVis.prototype = {
 		return nButton;
 	},
 	
+	
+	/**
+	 * Create a button which allows a "show all" action
+	 *  @method  _fnDomShowAllButton
+	 *  @returns {Node} Created button
+	 *  @private 
+	 */
+	"_fnDomShowAllButton": function ()
+	{
+		var
+			that = this,
+		  nButton = document.createElement('button'),
+		  nSpan = document.createElement('span');
+		
+		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
+			"ColVis_Button TableTools_Button ui-button ui-state-default";
+		nButton.appendChild( nSpan );
+		$(nSpan).html( '<span class="ColVis_title">'+this.s.sShowAll+'</span>' );
+		
+		$(nButton).click( function (e) {
+			for ( var i=0, iLen=that.s.abOriginal.length ; i<iLen ; i++ )
+			{
+				if (that.s.aiExclude.indexOf(i) === -1) {
+					that.s.dt.oInstance.fnSetColumnVis( i, true, false );
+				}
+			}
+			that.s.dt.oInstance.fnDraw( false );
+		} );
+		
+		return nButton;
+	},
 	
 	/**
 	 * Create the DOM for a show / hide button
@@ -839,7 +904,7 @@ ColVis.prototype.CLASS = "ColVis";
  *  @type      String
  *  @default   See code
  */
-ColVis.VERSION = "1.0.6.dev";
+ColVis.VERSION = "1.0.6";
 ColVis.prototype.VERSION = ColVis.VERSION;
 
 
