@@ -500,6 +500,7 @@ ColVis.prototype = {
 			{
 				that.s.dt.oInstance.fnSetColumnVis( i, that.s.abOriginal[i], false );
 			}
+			that._fnAdjustOpenRows();
 			that.s.dt.oInstance.fnDraw( false );
 		} );
 		
@@ -533,6 +534,7 @@ ColVis.prototype = {
 					that.s.dt.oInstance.fnSetColumnVis( i, true, false );
 				}
 			}
+			that._fnAdjustOpenRows();
 			that.s.dt.oInstance.fnDraw( false );
 		} );
 		
@@ -576,6 +578,7 @@ ColVis.prototype = {
 			var oldIndex = $.fn.dataTableExt.iApiIndex;
 			$.fn.dataTableExt.iApiIndex = that._fnDataTablesApiIndex.call(that);
 			that.s.dt.oInstance.fnSetColumnVis( i, showHide );
+			that._fnAdjustOpenRows();
 			$.fn.dataTableExt.iApiIndex = oldIndex; /* Restore */
 			
 			if ( that.s.fnStateChange !== null )
@@ -830,6 +833,20 @@ ColVis.prototype = {
 				document.body.removeChild( that.dom.background );
 				document.body.removeChild( that.dom.catcher );
 			} );
+		}
+	},
+	
+	
+	/**
+	 * 
+	 */
+	"_fnAdjustOpenRows": function ()
+	{
+		var aoOpen = this.s.dt.aoOpenRows;
+		var iVisible = this.s.dt.oApi._fnVisbleColumns( this.s.dt );
+		
+		for ( var i=0, iLen=aoOpen.length ; i<iLen ; i++ ) {
+			aoOpen[i].nTr.getElementsByTagName('td')[0].colSpan = iVisible;
 		}
 	}
 };
