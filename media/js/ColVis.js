@@ -177,7 +177,16 @@ ColVis = function( oDTSettings, oInit )
 		 *  @type     String
 		 *  @default  auto
 		 */
-		"sSize": "auto"
+		"sSize": "auto",
+		
+		/**
+		 * Indicate if the column list should be positioned by Javascript, visually below the button
+		 * or allow CSS to do the positioning
+		 *  @property bCssPosition
+		 *  @type     boolean
+		 *  @default  false
+		 */
+		"bCssPosition": false
 	};
 	
 	
@@ -401,6 +410,11 @@ ColVis.prototype = {
 		if ( typeof oConfig.sSize != 'undefined' )
 		{
 			this.s.sSize = oConfig.sSize;
+		}
+
+		if ( typeof oConfig.bCssPosition != 'undefined' )
+		{
+			this.s.bCssPosition = oConfig.bCssPosition;
 		}
 	},
 	
@@ -652,7 +666,11 @@ ColVis.prototype = {
 		nHidden.style.display = "none";
 		nHidden.className = !this.s.dt.bJUI ? "ColVis_collection TableTools_collection" :
 			"ColVis_collection TableTools_collection ui-buttonset ui-buttonset-multi";
-		nHidden.style.position = "absolute";
+		
+		if ( !this.s.bCssPosition )
+		{
+			nHidden.style.position = "absolute";
+		}
 		$(nHidden).css('opacity', 0);
 		
 		return nHidden;
@@ -733,8 +751,11 @@ ColVis.prototype = {
 		var iDivX = parseInt(oPos.left, 10);
 		var iDivY = parseInt(oPos.top + $(this.dom.button).outerHeight(), 10);
 		
-		nHidden.style.top = iDivY+"px";
-		nHidden.style.left = iDivX+"px";
+		if ( !this.s.bCssPosition )
+		{
+			nHidden.style.top = iDivY+"px";
+			nHidden.style.left = iDivX+"px";
+		}
 		nHidden.style.display = "block";
 		$(nHidden).css('opacity',0);
 		
@@ -779,17 +800,19 @@ ColVis.prototype = {
 		}
 		
 		/* Visual corrections to try and keep the collection visible */
-		nHidden.style.left = this.s.sAlign=="left" ?
-			iDivX+"px" : (iDivX-$(nHidden).outerWidth()+$(this.dom.button).outerWidth())+"px";
-		
-		var iDivWidth = $(nHidden).outerWidth();
-		var iDivHeight = $(nHidden).outerHeight();
-		
-		if ( iDivX + iDivWidth > iDocWidth )
+		if ( !this.s.bCssPosition )
 		{
-			nHidden.style.left = (iDocWidth-iDivWidth)+"px";
+			nHidden.style.left = this.s.sAlign=="left" ?
+				iDivX+"px" : (iDivX-$(nHidden).outerWidth()+$(this.dom.button).outerWidth())+"px";
+
+			var iDivWidth = $(nHidden).outerWidth();
+			var iDivHeight = $(nHidden).outerHeight();
+			
+			if ( iDivX + iDivWidth > iDocWidth )
+			{
+				nHidden.style.left = (iDocWidth-iDivWidth)+"px";
+			}
 		}
-		
 		
 		/* This results in a very small delay for the end user but it allows the animation to be
 		 * much smoother. If you don't want the animation, then the setTimeout can be removed
