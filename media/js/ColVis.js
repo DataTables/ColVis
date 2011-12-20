@@ -569,9 +569,10 @@ ColVis.prototype = {
 			that = this,
 			oColumn = this.s.dt.aoColumns[i],
 			nButton = document.createElement('button'),
-			nSpan = document.createElement('span');
+			nSpan = document.createElement('span'),
+			dt = this.s.dt;
 		
-		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
+		nButton.className = !dt.bJUI ? "ColVis_Button TableTools_Button" :
 			"ColVis_Button TableTools_Button ui-button ui-state-default";
 		nButton.appendChild( nSpan );
 		var sTitle = this.s.fnLabel===null ? oColumn.sTitle : this.s.fnLabel( i, oColumn.sTitle, oColumn.nTh );
@@ -591,8 +592,19 @@ ColVis.prototype = {
 			 */
 			var oldIndex = $.fn.dataTableExt.iApiIndex;
 			$.fn.dataTableExt.iApiIndex = that._fnDataTablesApiIndex.call(that);
-			that.s.dt.oInstance.fnSetColumnVis( i, showHide );
-			that._fnAdjustOpenRows();
+
+			// Optimisation for server-side processing when scrolling - don't do a full redraw
+			if ( dt.oFeatures.bServerSide && (dt.oScroll.sX !== "" || dt.oScroll.sY !== "" ) )
+			{
+				that.s.dt.oInstance.fnSetColumnVis( i, showHide, false );
+				that.s.dt.oInstance.oApi._fnScrollDraw( that.s.dt );
+				that._fnDrawCallback();
+			}
+			else
+			{
+				that.s.dt.oInstance.fnSetColumnVis( i, showHide );
+			}
+
 			$.fn.dataTableExt.iApiIndex = oldIndex; /* Restore */
 			
 			if ( that.s.fnStateChange !== null )
