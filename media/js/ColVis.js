@@ -577,7 +577,7 @@ ColVis.prototype = {
 		nButton.appendChild( nSpan );
 		var sTitle = this.s.fnLabel===null ? oColumn.sTitle : this.s.fnLabel( i, oColumn.sTitle, oColumn.nTh );
 		$(nSpan).html(
-			'<span class="ColVis_radio"><input type="checkbox"></span>'+
+			'<span class="ColVis_radio"><input type="checkbox"/></span>'+
 			'<span class="ColVis_title">'+sTitle+'</span>' );
 		
 		$(nButton).click( function (e) {
