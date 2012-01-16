@@ -873,7 +873,7 @@ ColVis.prototype = {
 	
 	
 	/**
-	 * 
+	 * Alter the colspan on any fnOpen rows
 	 */
 	"_fnAdjustOpenRows": function ()
 	{
