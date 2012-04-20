@@ -1,6 +1,6 @@
 /*
  * File:        ColVis.js
- * Version:     1.0.7
+ * Version:     1.0.8.dev
  * CVS:         $Id$
  * Description: Controls for column visiblity in DataTables
  * Author:      Allan Jardine (www.sprymedia.co.uk)
@@ -313,6 +313,7 @@ ColVis.prototype = {
 		this._fnApplyCustomisation();
 		
 		var that = this;
+		var i, iLen;
 		this.dom.wrapper = document.createElement('div');
 		this.dom.wrapper.className = "ColVis TableTools";
 		
@@ -327,7 +328,7 @@ ColVis.prototype = {
 		this._fnAddButtons();
 		
 		/* Store the original visbility information */
-		for ( var i=0, iLen=this.s.dt.aoColumns.length ; i<iLen ; i++ )
+		for ( i=0, iLen=this.s.dt.aoColumns.length ; i<iLen ; i++ )
 		{
 			this.s.abOriginal.push( this.s.dt.aoColumns[i].bVisible );
 		}
@@ -338,6 +339,16 @@ ColVis.prototype = {
 				that._fnDrawCallback.call( that );
 			},
 			"sName": "ColVis"
+		} );
+
+		/* If columns are reordered, then we need to update our exclude list and
+		 * rebuild the displayed list
+		 */
+		$(this.s.dt.oInstance).bind( 'column-reorder', function ( e, oSettings, oReorder ) {
+			for ( i=0, iLen=that.s.aiExclude.length ; i<iLen ; i++ ) {
+				that.s.aiExclude[i] = oReorder.aiInvertMapping[ that.s.aiExclude[i] ];
+			}
+			that.fnRebuild();
 		} );
 	},
 	
@@ -923,7 +934,7 @@ ColVis.fnRebuild = function ( oTable )
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Static object propterties
+ * Static object properties
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /**
@@ -958,7 +969,7 @@ ColVis.prototype.CLASS = "ColVis";
  *  @type      String
  *  @default   See code
  */
-ColVis.VERSION = "1.0.7";
+ColVis.VERSION = "1.0.8.dev";
 ColVis.prototype.VERSION = ColVis.VERSION;
 
 
