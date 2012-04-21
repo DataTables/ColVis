@@ -348,6 +348,10 @@ ColVis.prototype = {
 			for ( i=0, iLen=that.s.aiExclude.length ; i<iLen ; i++ ) {
 				that.s.aiExclude[i] = oReorder.aiInvertMapping[ that.s.aiExclude[i] ];
 			}
+
+			var mStore = that.s.abOriginal.splice( oReorder.iFrom, 1 )[0];
+			that.s.abOriginal.splice( oReorder.iTo, 0, mStore );
+			
 			that.fnRebuild();
 		} );
 	},
