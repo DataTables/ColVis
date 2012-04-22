@@ -435,8 +435,8 @@ ColVis.prototype = {
 	
 	
 	/**
-	 * On each table draw, check the visiblity checkboxes as needed. This allows any process to
-	 * update the table's column visiblity and ColVis will still be accurate.
+	 * On each table draw, check the visibility checkboxes as needed. This allows any process to
+	 * update the table's column visibility and ColVis will still be accurate.
 	 *  @method  _fnDrawCallback
 	 *  @returns void
 	 *  @private 
@@ -530,6 +530,7 @@ ColVis.prototype = {
 				that.s.dt.oInstance.fnSetColumnVis( i, that.s.abOriginal[i], false );
 			}
 			that._fnAdjustOpenRows();
+			that.s.dt.oInstance.fnAdjustColumnSizing( false );
 			that.s.dt.oInstance.fnDraw( false );
 		} );
 		
@@ -564,6 +565,7 @@ ColVis.prototype = {
 				}
 			}
 			that._fnAdjustOpenRows();
+			that.s.dt.oInstance.fnAdjustColumnSizing( false );
 			that.s.dt.oInstance.fnDraw( false );
 		} );
 		
@@ -612,6 +614,7 @@ ColVis.prototype = {
 			if ( dt.oFeatures.bServerSide && (dt.oScroll.sX !== "" || dt.oScroll.sY !== "" ) )
 			{
 				that.s.dt.oInstance.fnSetColumnVis( i, showHide, false );
+				that.s.dt.oInstance.fnAdjustColumnSizing( false );
 				that.s.dt.oInstance.oApi._fnScrollDraw( that.s.dt );
 				that._fnDrawCallback();
 			}
