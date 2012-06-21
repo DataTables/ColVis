@@ -1,6 +1,6 @@
 /*
  * File:        ColVis.js
- * Version:     1.0.8.dev
+ * Version:     1.0.8
  * CVS:         $Id$
  * Description: Controls for column visiblity in DataTables
  * Author:      Allan Jardine (www.sprymedia.co.uk)
@@ -976,7 +976,7 @@ ColVis.prototype.CLASS = "ColVis";
  *  @type      String
  *  @default   See code
  */
-ColVis.VERSION = "1.0.8.dev";
+ColVis.VERSION = "1.0.8";
 ColVis.prototype.VERSION = ColVis.VERSION;
 
 
