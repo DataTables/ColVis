@@ -837,7 +837,7 @@ ColVis.prototype = {
 			/* In IE6 if you set the checked attribute of a hidden checkbox, then this is not visually
 			 * reflected. As such, we need to do it here, once it is visible. Unbelievable.
 			 */
-			if ( jQuery.browser.msie && jQuery.browser.version == "6.0" )
+			if ( $.browser.msie && $.browser.version == "6.0" )
 			{
 				that._fnDrawCallback();
 			}
