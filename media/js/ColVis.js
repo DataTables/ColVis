@@ -1012,4 +1012,9 @@ else
 	alert( "Warning: ColVis requires DataTables 1.7 or greater - www.datatables.net/download");
 }
 
+
+// Make ColVis accessible from the DataTables instance
+$.fn.dataTable.ColVis = ColVis;
+
+
 })(jQuery);
