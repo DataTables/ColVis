@@ -443,20 +443,14 @@ ColVis.prototype = {
 	 */
 	"_fnDrawCallback": function ()
 	{
-		var aoColumns = this.s.dt.aoColumns;
+		var columns = this.s.dt.aoColumns;
+		var buttons = this.dom.buttons;
 		
-		for ( var i=0, iLen=aoColumns.length ; i<iLen ; i++ )
+		for ( var i=0, iLen=columns.length ; i<iLen ; i++ )
 		{
-			if ( this.dom.buttons[i] !== null )
+			if ( buttons[i] !== null )
 			{
-				if ( aoColumns[i].bVisible )
-				{
-					$('input', this.dom.buttons[i]).attr('checked','checked');
-				}
-				else
-				{
-					$('input', this.dom.buttons[i]).removeAttr('checked');
-				}
+				$('input', buttons[i]).prop( 'checked', columns[i].bVisible );
 			}
 		}
 	},
@@ -594,7 +588,7 @@ ColVis.prototype = {
 		nButton.appendChild( nSpan );
 		var sTitle = this.s.fnLabel===null ? oColumn.sTitle : this.s.fnLabel( i, oColumn.sTitle, oColumn.nTh );
 		$(nSpan).html(
-			'<span class="ColVis_radio"><input type="checkbox"/></span>'+
+			'<span class="ColVis_radio"><input type="checkbox" checked=""/></span>'+
 			'<span class="ColVis_title">'+sTitle+'</span>' );
 		
 		$(nButton).click( function (e) {
