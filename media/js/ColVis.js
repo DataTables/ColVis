@@ -10,7 +10,7 @@
  * License:     GPL v2 or BSD 3 point style
  * Project:     Just a little bit of fun :-)
  * Contact:     www.sprymedia.co.uk/contact
- * 
+ *
  * Copyright 2010-2011 Allan Jardine, all rights reserved.
  *
  * This source file is free software, under either the GPL v2 license or a
@@ -21,13 +21,13 @@
 
 (function($) {
 
-/** 
+/**
  * ColVis provides column visiblity control for DataTables
  * @class ColVis
  * @constructor
  * @param {object} DataTables settings object
  */
-ColVis = function( oDTSettings, oInit )
+var ColVis = function( oDTSettings, oInit )
 {
 	/* Santiy check that we are a new instance */
 	if ( !this.CLASS || this.CLASS != "ColVis" )
@@ -306,7 +306,7 @@ ColVis.prototype = {
 	 * Constructor logic
 	 *  @method  _fnConstruct
 	 *  @returns void
-	 *  @private 
+	 *  @private
 	 */
 	"_fnConstruct": function ()
 	{
@@ -361,7 +361,7 @@ ColVis.prototype = {
 	 * Apply any customisation to the settings from the DataTables initialisation
 	 *  @method  _fnApplyCustomisation
 	 *  @returns void
-	 *  @private 
+	 *  @private
 	 */
 	"_fnApplyCustomisation": function ()
 	{
@@ -439,7 +439,7 @@ ColVis.prototype = {
 	 * update the table's column visibility and ColVis will still be accurate.
 	 *  @method  _fnDrawCallback
 	 *  @returns void
-	 *  @private 
+	 *  @private
 	 */
 	"_fnDrawCallback": function ()
 	{
@@ -466,7 +466,7 @@ ColVis.prototype = {
 	 * Loop through the columns in the table and as a new button for each one.
 	 *  @method  _fnAddButtons
 	 *  @returns void
-	 *  @private 
+	 *  @private
 	 */
 	"_fnAddButtons": function ()
 	{
@@ -510,7 +510,7 @@ ColVis.prototype = {
 	 * Create a button which allows a "restore" action
 	 *  @method  _fnDomRestoreButton
 	 *  @returns {Node} Created button
-	 *  @private 
+	 *  @private
 	 */
 	"_fnDomRestoreButton": function ()
 	{
@@ -542,7 +542,7 @@ ColVis.prototype = {
 	 * Create a button which allows a "show all" action
 	 *  @method  _fnDomShowAllButton
 	 *  @returns {Node} Created button
-	 *  @private 
+	 *  @private
 	 */
 	"_fnDomShowAllButton": function ()
 	{
@@ -578,7 +578,7 @@ ColVis.prototype = {
 	 *  @method  _fnDomColumnButton
 	 *  @param {int} i Column in question
 	 *  @returns {Node} Created button
-	 *  @private 
+	 *  @private
 	 */
 	"_fnDomColumnButton": function ( i )
 	{
@@ -639,7 +639,7 @@ ColVis.prototype = {
 	 * Get the position in the DataTables instance array of the table for this instance of ColVis
 	 *  @method  _fnDataTablesApiIndex
 	 *  @returns {int} Index
-	 *  @private 
+	 *  @private
 	 */
 	"_fnDataTablesApiIndex": function ()
 	{
@@ -659,7 +659,7 @@ ColVis.prototype = {
 	 *  @method  _fnDomBaseButton
 	 *  @param   {String} text Button text
 	 *  @returns {Node} DIV element for the button
-	 *  @private 
+	 *  @private
 	 */
 	"_fnDomBaseButton": function ( text )
 	{
@@ -687,7 +687,7 @@ ColVis.prototype = {
 	 * Create the element used to contain list the columns (it is shown and hidden as needed)
 	 *  @method  _fnDomCollection
 	 *  @returns {Node} div container for the collection
-	 *  @private 
+	 *  @private
 	 */
 	"_fnDomCollection": function ()
 	{
@@ -711,11 +711,11 @@ ColVis.prototype = {
 	 * An element to be placed on top of the activate button to catch events
 	 *  @method  _fnDomCatcher
 	 *  @returns {Node} div container for the collection
-	 *  @private 
+	 *  @private
 	 */
 	"_fnDomCatcher": function ()
 	{
-		var 
+		var
 			that = this,
 			nCatcher = document.createElement('div');
 		nCatcher.className = "ColVis_catcher TableTools_catcher";
@@ -729,11 +729,11 @@ ColVis.prototype = {
 	
 	
 	/**
-	 * Create the element used to shade the background, and capture hide events (it is shown and 
+	 * Create the element used to shade the background, and capture hide events (it is shown and
 	 * hidden as needed)
 	 *  @method  _fnDomBackground
 	 *  @returns {Node} div container for the background
-	 *  @private 
+	 *  @private
 	 */
 	"_fnDomBackground": function ()
 	{
@@ -770,7 +770,7 @@ ColVis.prototype = {
 	 * Show the show / hide list and the background
 	 *  @method  _fnCollectionShow
 	 *  @returns void
-	 *  @private 
+	 *  @private
 	 */
 	"_fnCollectionShow": function ()
 	{
@@ -818,7 +818,7 @@ ColVis.prototype = {
 					aiSizes.push( $(this.dom.buttons[i]).outerWidth() );
 				}
 			}
-			iMax = Math.max.apply(window, aiSizes);
+			var iMax = Math.max.apply(window, aiSizes);
 			for ( i=0, iLen=this.dom.buttons.length ; i<iLen ; i++ )
 			{
 				if ( this.dom.buttons[i] !== null )
@@ -870,7 +870,7 @@ ColVis.prototype = {
 	 * Hide the show / hide list and the background
 	 *  @method  _fnCollectionHide
 	 *  @returns void
-	 *  @private 
+	 *  @private
 	 */
 	"_fnCollectionHide": function (  )
 	{
