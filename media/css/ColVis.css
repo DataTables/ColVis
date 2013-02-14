@@ -50,6 +50,11 @@ div.ColVis_collection button.ColVis_Button {
 	margin-bottom: 2px;
 }
 
+div.ColVis_collection button.ColVis_Group {
+	background: #dadada;
+	border: 1px solid #bababa;
+}
+
 div.ColVis_catcher {
 	position: absolute;
 	z-index: 1101;
@@ -68,6 +73,11 @@ button.ColVis_Button {
 div.ColVis_collection button.ColVis_Button:hover {
 	border: 1px solid #999;
 	background-color: #f0f0f0;
+}
+
+div.ColVis_collection button.ColVis_Group:hover {
+	background: #bababa;
+	border: 1px solid #424242;
 }
 
 span.ColVis_radio {
