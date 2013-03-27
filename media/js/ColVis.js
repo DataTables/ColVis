@@ -547,17 +547,19 @@ ColVis.prototype = {
 			nButton,
 			sExclude = ","+this.s.aiExclude.join(',')+",";
 		
-		for ( var i=0, iLen=this.s.dt.aoColumns.length ; i<iLen ; i++ )
-		{
-			if ( sExclude.indexOf( ","+i+"," ) == -1 )
+		if ( $.inArray( 'all', this.s.aiExclude ) === -1 ) {
+			for ( var i=0, iLen=this.s.dt.aoColumns.length ; i<iLen ; i++ )
 			{
-				nButton = this._fnDomColumnButton( i );
-				this.dom.buttons.push( nButton );
-				this.dom.collection.appendChild( nButton );
-			}
-			else
-			{
-				this.dom.buttons.push( null );
+				if ( sExclude.indexOf( ","+i+"," ) == -1 )
+				{
+					nButton = this._fnDomColumnButton( i );
+					this.dom.buttons.push( nButton );
+					this.dom.collection.appendChild( nButton );
+				}
+				else
+				{
+					this.dom.buttons.push( null );
+				}
 			}
 		}
 		
