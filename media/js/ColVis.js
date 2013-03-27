@@ -854,16 +854,12 @@ ColVis.prototype = {
 	{
 		var that = this;
 		
-		var nBackground = document.createElement('div');
-		nBackground.style.position = "absolute";
-		nBackground.style.left = "0px";
-		nBackground.style.top = "0px";
-		nBackground.className = "ColVis_collectionBackground TableTools_collectionBackground";
-		$(nBackground).css('opacity', 0);
-		
-		$(nBackground).click( function () {
-			that._fnCollectionHide.call( that, null, null );
-		} );
+		var background = $('<div></div>')
+			.addClass( 'ColVis_collectionBackground TableTools_collectionBackground' )
+			.css( 'opacity', 0 )
+			.click( function () {
+				that._fnCollectionHide.call( that, null, null );
+			} );
 		
 		/* When considering a mouse over action for the activation, we also consider a mouse out
 		 * which is the same as a mouse over the background - without all the messing around of
@@ -871,13 +867,13 @@ ColVis.prototype = {
 		 */
 		if ( this.s.activate == "mouseover" )
 		{
-			$(nBackground).mouseover( function () {
+			background.mouseover( function () {
 				that.s.overcollection = false;
 				that._fnCollectionHide.call( that, null, null );
 			} );
 		}
 		
-		return nBackground;
+		return background[0];
 	},
 	
 	

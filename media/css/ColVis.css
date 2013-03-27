@@ -30,6 +30,11 @@ button.ColVis_Button::-moz-focus-inner {
 }
 
 div.ColVis_collectionBackground {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
 	background-color: black;
 	z-index: 1100;
 }
