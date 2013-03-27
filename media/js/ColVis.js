@@ -497,12 +497,12 @@ ColVis.prototype = {
 		{
 			if ( allVisible(groups[j].aiColumns) )
 			{
-				$('input', this.dom.groupButtons[j]).attr('checked','checked');
+				$('input', this.dom.groupButtons[j]).prop('checked', true);
 				$('input', this.dom.groupButtons[j]).prop('indeterminate', false);
 			}
 			else if ( allHidden(groups[j].aiColumns) )
 			{
-				$('input', this.dom.groupButtons[j]).removeAttr('checked');
+				$('input', this.dom.groupButtons[j]).prop('checked', false);
 				$('input', this.dom.groupButtons[j]).prop('indeterminate', false);
 			}
 			else
@@ -673,6 +673,10 @@ ColVis.prototype = {
 
 		$(nButton).click( function (e) {
 			var showHide = !$('input', this).is(":checked");
+			if ( e.target.nodeName.toLowerCase() == "input" )
+			{
+				showHide = $('input', this).is(":checked");
+			}
 
 			for ( var j=0 ; j < oGroup.aiColumns.length ; j++ )
 			{
