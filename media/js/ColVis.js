@@ -243,6 +243,14 @@ var ColVis = function( oDTSettings, oInit )
 		"buttons": [],
 		
 		/**
+		 * List of group button elements
+		 *  @property groupButtons
+		 *  @type     Array
+		 *  @default  []
+		 */
+		"groupButtons": [],
+
+		/**
 		 * Restore button
 		 *  @property restore
 		 *  @type     Node
@@ -290,6 +298,7 @@ ColVis.prototype = {
 		}
 		
 		/* Re-add them (this is not the optimal way of doing this, it is fast and effective) */
+		this._fnAddGroups();
 		this._fnAddButtons();
 		
 		/* Update the checkboxes */
@@ -325,6 +334,7 @@ ColVis.prototype = {
 		this.dom.collection = this._fnDomCollection();
 		this.dom.background = this._fnDomBackground();
 		
+		this._fnAddGroups();
 		this._fnAddButtons();
 		
 		/* Store the original visbility information */
@@ -431,6 +441,11 @@ ColVis.prototype = {
 		{
 			this.s.bCssPosition = oConfig.bCssPosition;
 		}
+
+		if ( typeof oConfig.aoGroups != 'undefined' )
+		{
+			this.s.aoGroups = oConfig.aoGroups;
+		}
 	},
 	
 	
@@ -445,12 +460,68 @@ ColVis.prototype = {
 	{
 		var columns = this.s.dt.aoColumns;
 		var buttons = this.dom.buttons;
+		var groups = this.s.aoGroups;
 		
 		for ( var i=0, iLen=columns.length ; i<iLen ; i++ )
 		{
 			if ( buttons[i] !== null )
 			{
 				$('input', buttons[i]).prop( 'checked', columns[i].bVisible );
+			}
+		}
+
+		var allVisible = function ( columnIndeces ) {
+			for ( var k=0, kLen=columnIndeces.length ; k<kLen ; k++ )
+			{
+				if (  columns[columnIndeces[k]].bVisible === false ) { return false; }
+			}
+			return true;
+		};
+		var allHidden = function ( columnIndeces ) {
+			for ( var m=0 , mLen=columnIndeces.length ; m<mLen ; m++ )
+			{
+				if ( columns[columnIndeces[m]].bVisible === true ) { return false; }
+			}
+			return true;
+		};
+
+		for ( var j=0, jLen=groups.length ; j<jLen ; j++ )
+		{
+			if ( allVisible(groups[j].aiColumns) )
+			{
+				$('input', this.dom.groupButtons[j]).attr('checked','checked');
+				$('input', this.dom.groupButtons[j]).prop('indeterminate', false);
+			}
+			else if ( allHidden(groups[j].aiColumns) )
+			{
+				$('input', this.dom.groupButtons[j]).removeAttr('checked');
+				$('input', this.dom.groupButtons[j]).prop('indeterminate', false);
+			}
+			else
+			{
+				$('input', this.dom.groupButtons[j]).prop('indeterminate', true);
+			}
+		}
+	},
+
+
+	/**
+	 * Loop through the groups (provided in the settings) and create a button for each.
+	 *  @method  _fnAddgroups
+	 *  @returns void
+	 *  @private
+	 */
+	"_fnAddGroups": function ()
+	{
+		var nButton;
+
+		if ( typeof this.s.aoGroups != 'undefined' )
+		{
+			for ( var i=0, iLen=this.s.aoGroups.length ; i<iLen ; i++ )
+			{
+				nButton = this._fnDomGroupButton( i );
+				this.dom.groupButtons.push( nButton );
+				this.dom.collection.appendChild( nButton );
 			}
 		}
 	},
@@ -567,6 +638,44 @@ ColVis.prototype = {
 	},
 	
 	
+	/**
+	 * Create the DOM for a show / hide group button
+	 *  @method  _fnDomGroupButton
+	 *  @param {int} i Group in question, order based on that provided in settings
+	 *  @returns {Node} Created button
+	 *  @private
+	 */
+	"_fnDomGroupButton": function ( i )
+	{
+		var
+			that = this,
+			oGroup = this.s.aoGroups[i],
+			aoColumns = this.s.dt.aoColumns,
+			nButton = document.createElement('button'),
+			nSpan = document.createElement('span'),
+			dt = this.s.dt;
+
+		nButton.className = !dt.bJUI ? "ColVis_Group ColVis_Button TableTools_Button" :
+			"ColVis_Group ColVis_Button TableTools_Button ui-button ui-state-default";
+		nButton.appendChild( nSpan );
+		var sTitle = oGroup.sTitle;
+		$(nSpan).html(
+			'<span class="ColVis_radio"><input type="checkbox"/></span>'+
+			'<span class="ColVis_title">'+sTitle+'</span>' );
+
+		$(nButton).click( function (e) {
+			var showHide = !$('input', this).is(":checked");
+
+			for ( var j=0 ; j < oGroup.aiColumns.length ; j++ )
+			{
+				that.s.dt.oInstance.fnSetColumnVis( oGroup.aiColumns[j], showHide );
+			}
+		});
+
+		return nButton;
+	},
+
+
 	/**
 	 * Create the DOM for a show / hide button
 	 *  @method  _fnDomColumnButton
