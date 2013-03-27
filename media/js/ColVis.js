@@ -114,6 +114,14 @@ var ColVis = function( oDTSettings, oInit )
 		"aiExclude": [],
 		
 		/**
+		 * Group buttons
+		 *  @property aoGroups
+		 *  @type     Array
+		 *  @default  []
+		 */
+		"aoGroups": [],
+		
+		/**
 		 * Store the original viisbility settings so they could be restored
 		 *  @property abOriginal
 		 *  @type     Array
