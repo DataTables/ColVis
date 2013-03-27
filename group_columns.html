@@ -18,6 +18,7 @@
 				$('#example').dataTable( {
 					"sDom": 'C<"clear">lfrtip',
 					"oColVis": {
+						"aiExclude": [ 'all' ],
 						"aoGroups": [
 							{
 								"sTitle": "Engine",
@@ -40,10 +41,8 @@
 			</div>
 			
 			<h1>Preamble</h1>
-			<p>It can be useful at times to show and hide columns as a group. All groupings are held
-				within the oColVis.aoGroups array. Create a grouping by naming it (sTitle) and specifying
-				by index which columns belong to it (aiColumns). These options can be used in combination
-				with oColVis.aiExclude, as demonstrated below.</p>
+			<p>It can be useful at times to show and hide multiple columns together - i.e. grouping them together. Groupings are defined by the <code>aoGroups</code> array. Create a group button by naming it (using the <code>sTitle</code> option) and specifying by index which columns belong to it (using the </code>aiColumns</code> option).</p>
+			<p>Note also that this ability to create groups can be used in combination <code>aiExclude</code> to remove individual columns from the list (should you wish them to only be used in the groups), or set <code>aiExclude = [ 'all' ]</code> to show only the grouping buttons (i.e. individual column control buttons will not be shown).</p>
 			
 			<h1>Live example</h1>
 			<form>
@@ -494,7 +493,6 @@
 	$('#example').dataTable( {
 		"sDom": 'C&lt;"clear"&gt;lfrtip',
 		"oColVis": {
-			"aiExclude": [ 0, 3 ],
 			"aoGroups": [
 				{
 					"sTitle": "Engine",
