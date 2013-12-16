@@ -543,6 +543,7 @@ ColVis.prototype = {
 			{
 				nButton = this._fnDomGroupButton( i );
 				this.dom.groupButtons.push( nButton );
+				this.dom.buttons.push( nButton );
 				this.dom.collection.appendChild( nButton );
 			}
 		}
