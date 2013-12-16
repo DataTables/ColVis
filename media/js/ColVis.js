@@ -576,8 +576,8 @@ ColVis.prototype = {
 
 		if ( this.s.order === 'alpha' ) {
 			this.dom.buttons.sort( function ( a, b ) {
-				var titleA = columns[ a.__columnIdx ];
-				var titleB = columns[ b.__columnIdx ];
+				var titleA = columns[ a.__columnIdx ].sTitle;
+				var titleB = columns[ b.__columnIdx ].sTitle;
 
 				return titleA === titleB ?
 					0 :
