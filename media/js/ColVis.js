@@ -170,8 +170,9 @@ var ColVis = function( oDTSettings, oInit )
 		"iOverlayFade": 500,
 
 		/**
-		 * Label callback for column names. Takes three parameters: 1. the column index, 2. the column
-		 * title detected by DataTables and 3. the TH node for the column
+		 * Label callback for column names. Takes three parameters: 1. the
+		 * column index, 2. the column title detected by DataTables and 3. the
+		 * TH node for the column
 		 *  @property fnLabel
 		 *  @type     Function
 		 *  @default  null
@@ -179,8 +180,9 @@ var ColVis = function( oDTSettings, oInit )
 		"fnLabel": null,
 
 		/**
-		 * Indicate if ColVis should automatically calculate the size of buttons or not. The default
-		 * is for it to do so. Set to "css" to disable the automatic sizing
+		 * Indicate if ColVis should automatically calculate the size of buttons
+		 * or not. The default is for it to do so. Set to "css" to disable the
+		 * automatic sizing
 		 *  @property sSize
 		 *  @type     String
 		 *  @default  auto
@@ -188,13 +190,22 @@ var ColVis = function( oDTSettings, oInit )
 		"sSize": "auto",
 
 		/**
-		 * Indicate if the column list should be positioned by Javascript, visually below the button
-		 * or allow CSS to do the positioning
+		 * Indicate if the column list should be positioned by Javascript,
+		 * visually below the button or allow CSS to do the positioning
 		 *  @property bCssPosition
 		 *  @type     boolean
 		 *  @default  false
 		 */
-		"bCssPosition": false
+		"bCssPosition": false,
+
+		/**
+		 * Button ordering - 'alpha' (alphabetical) or 'column' (table column
+		 * order)
+		 *  @property order
+		 *  @type     string
+		 *  @default  column
+		 */
+		"order": 'column'
 	};
 
 
@@ -293,10 +304,7 @@ ColVis.prototype = {
 		/* Remove the old buttons */
 		for ( var i=this.dom.buttons.length-1 ; i>=0 ; i-- )
 		{
-			if ( this.dom.buttons[i] !== null )
-			{
-				this.dom.collection.removeChild( this.dom.buttons[i] );
-			}
+			this.dom.collection.removeChild( this.dom.buttons[i] );
 		}
 		this.dom.buttons.splice( 0, this.dom.buttons.length );
 
@@ -454,6 +462,11 @@ ColVis.prototype = {
 		{
 			this.s.aoGroups = oConfig.aoGroups;
 		}
+
+		if ( typeof oConfig.order != 'undefined' )
+		{
+			this.s.order = oConfig.order;
+		}
 	},
 
 
@@ -469,12 +482,13 @@ ColVis.prototype = {
 		var columns = this.s.dt.aoColumns;
 		var buttons = this.dom.buttons;
 		var groups = this.s.aoGroups;
+		var button;
 
-		for ( var i=0, iLen=columns.length ; i<iLen ; i++ )
-		{
-			if ( buttons[i] !== null )
-			{
-				$('input', buttons[i]).prop( 'checked', columns[i].bVisible );
+		for ( var i=0, ien=buttons.length ; i<ien ; i++ ) {
+			button = buttons[i];
+
+			if ( button.__columnIdx !== undefined ) {
+				$('input', button).prop( 'checked', columns[ button.__columnIdx ].bVisible );
 			}
 		}
 
@@ -545,22 +559,31 @@ ColVis.prototype = {
 	{
 		var
 			nButton,
-			sExclude = ","+this.s.aiExclude.join(',')+",";
+			columns = this.s.dt.aoColumns;
 
 		if ( $.inArray( 'all', this.s.aiExclude ) === -1 ) {
-			for ( var i=0, iLen=this.s.dt.aoColumns.length ; i<iLen ; i++ )
+			for ( var i=0, iLen=columns.length ; i<iLen ; i++ )
 			{
-				if ( sExclude.indexOf( ","+i+"," ) == -1 )
+				if ( $.inArray( i, this.s.aiExclude ) === -1 )
 				{
 					nButton = this._fnDomColumnButton( i );
+					nButton.__columnIdx = i;
 					this.dom.buttons.push( nButton );
-					this.dom.collection.appendChild( nButton );
-				}
-				else
-				{
-					this.dom.buttons.push( null );
 				}
 			}
+		}
+
+		if ( this.s.order === 'alpha' ) {
+			this.dom.buttons.sort( function ( a, b ) {
+				var titleA = columns[ a.__columnIdx ];
+				var titleB = columns[ b.__columnIdx ];
+
+				return titleA === titleB ?
+					0 :
+					titleA < titleB ?
+						-1 :
+						1;
+			} );
 		}
 
 		if ( this.s.bRestore )
@@ -568,7 +591,6 @@ ColVis.prototype = {
 			nButton = this._fnDomRestoreButton();
 			nButton.className += " ColVis_Restore";
 			this.dom.buttons.push( nButton );
-			this.dom.collection.appendChild( nButton );
 		}
 
 		if ( this.s.bShowAll )
@@ -576,8 +598,9 @@ ColVis.prototype = {
 			nButton = this._fnDomShowAllButton();
 			nButton.className += " ColVis_ShowAll";
 			this.dom.buttons.push( nButton );
-			this.dom.collection.appendChild( nButton );
 		}
+
+		$(this.dom.collection).append( this.dom.buttons );
 	},
 
 
@@ -925,19 +948,13 @@ ColVis.prototype = {
 			this.dom.collection.style.width = "auto";
 			for ( i=0, iLen=this.dom.buttons.length ; i<iLen ; i++ )
 			{
-				if ( this.dom.buttons[i] !== null )
-				{
-					this.dom.buttons[i].style.width = "auto";
-					aiSizes.push( $(this.dom.buttons[i]).outerWidth() );
-				}
+				this.dom.buttons[i].style.width = "auto";
+				aiSizes.push( $(this.dom.buttons[i]).outerWidth() );
 			}
 			var iMax = Math.max.apply(window, aiSizes);
 			for ( i=0, iLen=this.dom.buttons.length ; i<iLen ; i++ )
 			{
-				if ( this.dom.buttons[i] !== null )
-				{
-					this.dom.buttons[i].style.width = iMax+"px";
-				}
+				this.dom.buttons[i].style.width = iMax+"px";
 			}
 			this.dom.collection.style.width = iMax+"px";
 		}
