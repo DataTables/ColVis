@@ -19,7 +19,7 @@
 					"sDom": 'lfrtip'
 				} );
 				
-				var oColVis = new ColVis( oTables.fnSettings(), {
+				var oColVis = new $.fn.dataTable.ColVis( oTables.fnSettings(), {
 					"fnStateChange": function ( iColumn, bVisible ) {
 						var jqTables = $('table:not(#example)'); // ColVis will do #example
 						for ( var i=0, iLen=jqTables.length ; i<iLen ; i++ ) {
@@ -290,7 +290,7 @@
 				<li><a href="group_columns.html">Grouping columns within the show / hide list</a></li>
 				<li><a href="two_tables.html">Two tables initialised together - individual controls</a></li>
 				<li><a href="two_tables_identical.html">Two tables initialised together - shared control</a></li>
-				<li><a href="style.html">Alternative styling and reset to original</a></li>
+				<li><a href="restore.html">Restore and view all buttons</a></li>
 				<li><a href="title_callback.html">Customisation of the button label with a callback</a></li>
 			</ul>
 			
@@ -301,7 +301,7 @@
 		"sDom": 'lfrtip'
 	} );
 	
-	var oColVis = new ColVis( oTables.fnSettings() );
+	var oColVis = new $.fn.dataTable.ColVis( oTables.fnSettings() );
 	$(oColVis).bind('stateChange', function (e, data) {
 		var jqTables = $('table:not(#example)');
 		for ( var i=0, iLen=jqTables.length ; i&lt;iLen ; i++ ) {
@@ -315,7 +315,7 @@
 			
 			<div id="footer" style="text-align:center;">
 				<span style="font-size:10px;">
-					ColVis and DataTables &copy; Allan Jardine 2009-2010
+					ColVis and DataTables &copy; Allan Jardine 2009-2014
 				</span>
 			</div>
 		</div>

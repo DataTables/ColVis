@@ -180,16 +180,6 @@ var ColVis = function( oDTSettings, oInit )
 		"fnLabel": null,
 
 		/**
-		 * Indicate if ColVis should automatically calculate the size of buttons
-		 * or not. The default is for it to do so. Set to "css" to disable the
-		 * automatic sizing
-		 *  @property sSize
-		 *  @type     String
-		 *  @default  auto
-		 */
-		"sSize": "auto",
-
-		/**
 		 * Indicate if the column list should be positioned by Javascript,
 		 * visually below the button or allow CSS to do the positioning
 		 *  @property bCssPosition
@@ -340,11 +330,19 @@ ColVis.prototype = {
 		var that = this;
 		var i, iLen;
 		this.dom.wrapper = document.createElement('div');
-		this.dom.wrapper.className = "ColVis TableTools";
+		this.dom.wrapper.className = "ColVis";
 
-		this.dom.button = this._fnDomBaseButton( this.s.buttonText );
-		this.dom.button.className += " ColVis_MasterButton";
-		this.dom.wrapper.appendChild( this.dom.button );
+		this.dom.button = $( '<button />', {
+				'class': !this.s.dt.bJUI ?
+					"ColVis_Button ColVis_MasterButton" :
+					"ColVis_Button ColVis_MasterButton ui-button ui-state-default"
+			} )
+			.append( '<span>'+this.s.buttonText+'</span>' )
+			.bind( this.s.activate=="mouseover" ? "mouseover" : "click", function (e) {
+				e.preventDefault();
+				that._fnCollectionShow();
+			} )
+			.appendTo( this.dom.wrapper )[0];
 
 		this.dom.catcher = this._fnDomCatcher();
 		this.dom.collection = this._fnDomCollection();
@@ -353,7 +351,7 @@ ColVis.prototype = {
 		this._fnAddGroups();
 		this._fnAddButtons();
 
-		/* Store the original visbility information */
+		/* Store the original visibility information */
 		for ( i=0, iLen=this.s.dt.aoColumns.length ; i<iLen ; i++ )
 		{
 			this.s.abOriginal.push( this.s.dt.aoColumns[i].bVisible );
@@ -446,11 +444,6 @@ ColVis.prototype = {
 		if ( typeof oConfig.fnLabel != 'undefined' )
 		{
 			this.s.fnLabel = oConfig.fnLabel;
-		}
-
-		if ( typeof oConfig.sSize != 'undefined' )
-		{
-			this.s.sSize = oConfig.sSize;
 		}
 
 		if ( typeof oConfig.bCssPosition != 'undefined' )
@@ -615,25 +608,22 @@ ColVis.prototype = {
 	{
 		var
 			that = this,
-			nButton = document.createElement('button'),
-			nSpan = document.createElement('span');
+			dt = this.s.dt;
 
-		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
-			"ColVis_Button TableTools_Button ui-button ui-state-default";
-		nButton.appendChild( nSpan );
-		$(nSpan).html( '<span class="ColVis_title">'+this.s.sRestore+'</span>' );
-
-		$(nButton).click( function (e) {
-			for ( var i=0, iLen=that.s.abOriginal.length ; i<iLen ; i++ )
-			{
-				that.s.dt.oInstance.fnSetColumnVis( i, that.s.abOriginal[i], false );
-			}
-			that._fnAdjustOpenRows();
-			that.s.dt.oInstance.fnAdjustColumnSizing( false );
-			that.s.dt.oInstance.fnDraw( false );
-		} );
-
-		return nButton;
+		return $(
+				'<li class="ColVis_Special '+(dt.bJUI ? 'ui-button ui-state-default' : '')+'">'+
+					this.s.sRestore+
+				'</li>'
+			)
+			.click( function (e) {
+				for ( var i=0, iLen=that.s.abOriginal.length ; i<iLen ; i++ )
+				{
+					that.s.dt.oInstance.fnSetColumnVis( i, that.s.abOriginal[i], false );
+				}
+				that._fnAdjustOpenRows();
+				that.s.dt.oInstance.fnAdjustColumnSizing( false );
+				that.s.dt.oInstance.fnDraw( false );
+			} )[0];
 	},
 
 
@@ -647,28 +637,25 @@ ColVis.prototype = {
 	{
 		var
 			that = this,
-			nButton = document.createElement('button'),
-			nSpan = document.createElement('span');
+			dt = this.s.dt;
 
-		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
-			"ColVis_Button TableTools_Button ui-button ui-state-default";
-		nButton.appendChild( nSpan );
-		$(nSpan).html( '<span class="ColVis_title">'+this.s.sShowAll+'</span>' );
-
-		$(nButton).click( function (e) {
-			for ( var i=0, iLen=that.s.abOriginal.length ; i<iLen ; i++ )
-			{
-				if (that.s.aiExclude.indexOf(i) === -1)
+		return $(
+				'<li class="ColVis_Special '+(dt.bJUI ? 'ui-button ui-state-default' : '')+'">'+
+					this.s.sShowAll+
+				'</li>'
+			)
+			.click( function (e) {
+				for ( var i=0, iLen=that.s.abOriginal.length ; i<iLen ; i++ )
 				{
-					that.s.dt.oInstance.fnSetColumnVis( i, true, false );
+					if (that.s.aiExclude.indexOf(i) === -1)
+					{
+						that.s.dt.oInstance.fnSetColumnVis( i, true, false );
+					}
 				}
-			}
-			that._fnAdjustOpenRows();
-			that.s.dt.oInstance.fnAdjustColumnSizing( false );
-			that.s.dt.oInstance.fnDraw( false );
-		} );
-
-		return nButton;
+				that._fnAdjustOpenRows();
+				that.s.dt.oInstance.fnAdjustColumnSizing( false );
+				that.s.dt.oInstance.fnDraw( false );
+			} )[0];
 	},
 
 
@@ -683,34 +670,29 @@ ColVis.prototype = {
 	{
 		var
 			that = this,
-			oGroup = this.s.aoGroups[i],
-			aoColumns = this.s.dt.aoColumns,
-			nButton = document.createElement('button'),
-			nSpan = document.createElement('span'),
-			dt = this.s.dt;
+			dt = this.s.dt,
+			oGroup = this.s.aoGroups[i];
 
-		nButton.className = !dt.bJUI ? "ColVis_Group ColVis_Button TableTools_Button" :
-			"ColVis_Group ColVis_Button TableTools_Button ui-button ui-state-default";
-		nButton.appendChild( nSpan );
-		var sTitle = oGroup.sTitle;
-		$(nSpan).html(
-			'<span class="ColVis_radio"><input type="checkbox"/></span>'+
-			'<span class="ColVis_title">'+sTitle+'</span>' );
+		return $(
+				'<li class="ColVis_Special '+(dt.bJUI ? 'ui-button ui-state-default' : '')+'">'+
+					'<label>'+
+						'<input type="checkbox" />'+
+						'<span>'+oGroup.sTitle+'</span>'+
+					'</label>'+
+				'</li>'
+			)
+			.click( function (e) {
+				var showHide = !$('input', this).is(":checked");
+				if (  e.target.nodeName.toLowerCase() !== "li" )
+				{
+					showHide = ! showHide;
+				}
 
-		$(nButton).click( function (e) {
-			var showHide = !$('input', this).is(":checked");
-			if ( e.target.nodeName.toLowerCase() == "input" )
-			{
-				showHide = $('input', this).is(":checked");
-			}
-
-			for ( var j=0 ; j < oGroup.aiColumns.length ; j++ )
-			{
-				that.s.dt.oInstance.fnSetColumnVis( oGroup.aiColumns[j], showHide );
-			}
-		});
-
-		return nButton;
+				for ( var j=0 ; j < oGroup.aiColumns.length ; j++ )
+				{
+					that.s.dt.oInstance.fnSetColumnVis( oGroup.aiColumns[j], showHide );
+				}
+			} )[0];
 	},
 
 
@@ -725,59 +707,60 @@ ColVis.prototype = {
 	{
 		var
 			that = this,
-			oColumn = this.s.dt.aoColumns[i],
-			nButton = document.createElement('button'),
-			nSpan = document.createElement('span'),
+			column = this.s.dt.aoColumns[i],
 			dt = this.s.dt;
 
-		nButton.className = !dt.bJUI ? "ColVis_Button TableTools_Button" :
-			"ColVis_Button TableTools_Button ui-button ui-state-default";
-		nButton.appendChild( nSpan );
-		var sTitle = this.s.fnLabel===null ? oColumn.sTitle : this.s.fnLabel( i, oColumn.sTitle, oColumn.nTh );
-		$(nSpan).html(
-			'<span class="ColVis_radio"><input type="checkbox" checked=""/></span>'+
-			'<span class="ColVis_title">'+sTitle+'</span>' );
+		var title = this.s.fnLabel===null ?
+			column.sTitle :
+			this.s.fnLabel( i, column.sTitle, column.nTh );
 
-		$(nButton).click( function (e) {
-			var showHide = !$('input', this).is(":checked");
-			if ( e.target.nodeName.toLowerCase() == "input" )
-			{
-				showHide = $('input', this).is(":checked");
-			}
+		return $(
+				'<li '+(dt.bJUI ? 'class="ui-button ui-state-default"' : '')+'>'+
+					'<label>'+
+						'<input type="checkbox" />'+
+						'<span>'+title+'</span>'+
+					'</label>'+
+				'</li>'
+			)
+			.click( function (e) {
+				var showHide = !$('input', this).is(":checked");
+				if (  e.target.nodeName.toLowerCase() !== "li" )
+				{
+					showHide = ! showHide;
+				}
 
-			/* Need to consider the case where the initialiser created more than one table - change the
-			 * API index that DataTables is using
-			 */
-			var oldIndex = $.fn.dataTableExt.iApiIndex;
-			$.fn.dataTableExt.iApiIndex = that._fnDataTablesApiIndex.call(that);
+				/* Need to consider the case where the initialiser created more than one table - change the
+				 * API index that DataTables is using
+				 */
+				var oldIndex = $.fn.dataTableExt.iApiIndex;
+				$.fn.dataTableExt.iApiIndex = that._fnDataTablesApiIndex.call(that);
 
-			// Optimisation for server-side processing when scrolling - don't do a full redraw
-			if ( dt.oFeatures.bServerSide && (dt.oScroll.sX !== "" || dt.oScroll.sY !== "" ) )
-			{
-				that.s.dt.oInstance.fnSetColumnVis( i, showHide, false );
-				that.s.dt.oInstance.fnAdjustColumnSizing( false );
-				that.s.dt.oInstance.oApi._fnScrollDraw( that.s.dt );
-				that._fnDrawCallback();
-			}
-			else
-			{
-				that.s.dt.oInstance.fnSetColumnVis( i, showHide );
-			}
+				// Optimisation for server-side processing when scrolling - don't do a full redraw
+				if ( dt.oFeatures.bServerSide && (dt.oScroll.sX !== "" || dt.oScroll.sY !== "" ) )
+				{
+					that.s.dt.oInstance.fnSetColumnVis( i, showHide, false );
+					that.s.dt.oInstance.fnAdjustColumnSizing( false );
+					that.s.dt.oInstance.oApi._fnScrollDraw( that.s.dt );
+					that._fnDrawCallback();
+				}
+				else
+				{
+					that.s.dt.oInstance.fnSetColumnVis( i, showHide );
+				}
 
-			$.fn.dataTableExt.iApiIndex = oldIndex; /* Restore */
+				$.fn.dataTableExt.iApiIndex = oldIndex; /* Restore */
 
-			if ( that.s.fnStateChange !== null )
-			{
-				that.s.fnStateChange.call( that, i, showHide );
-			}
-		} );
-
-		return nButton;
+				if ( that.s.fnStateChange !== null )
+				{
+					that.s.fnStateChange.call( that, i, showHide );
+				}
+			} )[0];
 	},
 
 
 	/**
-	 * Get the position in the DataTables instance array of the table for this instance of ColVis
+	 * Get the position in the DataTables instance array of the table for this
+	 * instance of ColVis
 	 *  @method  _fnDataTablesApiIndex
 	 *  @returns {int} Index
 	 *  @private
@@ -796,55 +779,26 @@ ColVis.prototype = {
 
 
 	/**
-	 * Create the DOM needed for the button and apply some base properties. All buttons start here
-	 *  @method  _fnDomBaseButton
-	 *  @param   {String} text Button text
-	 *  @returns {Node} DIV element for the button
-	 *  @private
-	 */
-	"_fnDomBaseButton": function ( text )
-	{
-		var
-			that = this,
-			nButton = document.createElement('button'),
-			nSpan = document.createElement('span'),
-			sEvent = this.s.activate=="mouseover" ? "mouseover" : "click";
-
-		nButton.className = !this.s.dt.bJUI ? "ColVis_Button TableTools_Button" :
-			"ColVis_Button TableTools_Button ui-button ui-state-default";
-		nButton.appendChild( nSpan );
-		nSpan.innerHTML = text;
-
-		$(nButton).bind( sEvent, function (e) {
-			that._fnCollectionShow();
-			e.preventDefault();
-		} );
-
-		return nButton;
-	},
-
-
-	/**
-	 * Create the element used to contain list the columns (it is shown and hidden as needed)
+	 * Create the element used to contain list the columns (it is shown and
+	 * hidden as needed)
 	 *  @method  _fnDomCollection
 	 *  @returns {Node} div container for the collection
 	 *  @private
 	 */
 	"_fnDomCollection": function ()
 	{
-		var that = this;
-		var nHidden = document.createElement('div');
-		nHidden.style.display = "none";
-		nHidden.className = !this.s.dt.bJUI ? "ColVis_collection TableTools_collection" :
-			"ColVis_collection TableTools_collection ui-buttonset ui-buttonset-multi";
-
-		if ( !this.s.bCssPosition )
-		{
-			nHidden.style.position = "absolute";
-		}
-		$(nHidden).css('opacity', 0);
-
-		return nHidden;
+		return $('<ul />', {
+				'class': !this.s.dt.bJUI ?
+					"ColVis_collection" :
+					"ColVis_collection ui-buttonset ui-buttonset-multi"
+			} )
+		.css( {
+			'display': 'none',
+			'opacity': 0,
+			'position': ! this.s.bCssPosition ?
+				'absolute' :
+				''
+		} )[0];
 	},
 
 
@@ -859,7 +813,7 @@ ColVis.prototype = {
 		var
 			that = this,
 			nCatcher = document.createElement('div');
-		nCatcher.className = "ColVis_catcher TableTools_catcher";
+		nCatcher.className = "ColVis_catcher";
 
 		$(nCatcher).click( function () {
 			that._fnCollectionHide.call( that, null, null );
@@ -881,7 +835,7 @@ ColVis.prototype = {
 		var that = this;
 
 		var background = $('<div></div>')
-			.addClass( 'ColVis_collectionBackground TableTools_collectionBackground' )
+			.addClass( 'ColVis_collectionBackground' )
 			.css( 'opacity', 0 )
 			.click( function () {
 				that._fnCollectionHide.call( that, null, null );
@@ -918,7 +872,7 @@ ColVis.prototype = {
 		var iDivX = parseInt(oPos.left, 10);
 		var iDivY = parseInt(oPos.top + $(this.dom.button).outerHeight(), 10);
 
-		if ( !this.s.bCssPosition )
+		if ( ! this.s.bCssPosition )
 		{
 			nHidden.style.top = iDivY+"px";
 			nHidden.style.left = iDivX+"px";
@@ -941,24 +895,6 @@ ColVis.prototype = {
 		document.body.appendChild( nBackground );
 		document.body.appendChild( nHidden );
 		document.body.appendChild( this.dom.catcher );
-
-		/* Resize the buttons */
-		if ( this.s.sSize == "auto" )
-		{
-			var aiSizes = [];
-			this.dom.collection.style.width = "auto";
-			for ( i=0, iLen=this.dom.buttons.length ; i<iLen ; i++ )
-			{
-				this.dom.buttons[i].style.width = "auto";
-				aiSizes.push( $(this.dom.buttons[i]).outerWidth() );
-			}
-			var iMax = Math.max.apply(window, aiSizes);
-			for ( i=0, iLen=this.dom.buttons.length ; i<iLen ; i++ )
-			{
-				this.dom.buttons[i].style.width = iMax+"px";
-			}
-			this.dom.collection.style.width = iMax+"px";
-		}
 
 		/* This results in a very small delay for the end user but it allows the animation to be
 		 * much smoother. If you don't want the animation, then the setTimeout can be removed
