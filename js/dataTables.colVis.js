@@ -1,22 +1,24 @@
-/*
- * File:        ColVis.js
- * Version:     1.1.0-dev
- * CVS:         $Id$
- * Description: Controls for column visibility in DataTables
- * Author:      Allan Jardine (www.sprymedia.co.uk)
- * Created:     Wed Sep 15 18:23:29 BST 2010
- * Modified:    $Date$ by $Author$
- * Language:    Javascript
- * License:     GPL v2 or BSD 3 point style
- * Project:     Just a little bit of fun :-)
- * Contact:     www.sprymedia.co.uk/contact
+/*! ColVis 1.1.0-dev
+ * ©2010-2014 SpryMedia Ltd - datatables.net/license
+ */
+
+/**
+ * @summary     ColVis
+ * @description Controls for column visibility in DataTables
+ * @version     1.1.0-dev
+ * @file        dataTables.colReorder.js
+ * @author      SpryMedia Ltd (www.sprymedia.co.uk)
+ * @contact     www.sprymedia.co.uk/contact
+ * @copyright   Copyright 2010-2014 SpryMedia Ltd.
  *
- * Copyright 2010-2011 Allan Jardine, all rights reserved.
+ * This source file is free software, available under the following license:
+ *   MIT license - http://datatables.net/license/mit
  *
- * This source file is free software, under either the GPL v2 license or a
- * BSD style license, available at:
- *   http://datatables.net/license_gpl2
- *   http://datatables.net/license_bsd
+ * This source file is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the license files for details.
+ *
+ * For details please refer to: http://www.datatables.net
  */
 
 (function($) {
