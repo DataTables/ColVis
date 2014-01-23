@@ -21,7 +21,11 @@
  * For details please refer to: http://www.datatables.net
  */
 
-(function($) {
+(function(window, document, undefined) {
+
+
+var factory = function( $, DataTable ) {
+"use strict";
 
 /**
  * ColVis provides column visibility control for DataTables
@@ -1071,6 +1075,22 @@ else
 
 // Make ColVis accessible from the DataTables instance
 $.fn.dataTable.ColVis = ColVis;
+$.fn.DataTable.ColVis = ColVis;
 
 
-})(jQuery);
+return ColVis;
+}; // /factory
+
+
+// Define as an AMD module if possible
+if ( typeof define === 'function' && define.amd ) {
+	define( 'datatables-colvis', ['jquery', 'datatables'], factory );
+}
+else if ( jQuery && !jQuery.fn.dataTable.ColVis ) {
+	// Otherwise simply initialise as normal, stopping multiple evaluation
+	factory( jQuery, jQuery.fn.dataTable );
+}
+
+
+})(window, document);
+
