@@ -2,7 +2,7 @@
  * File:        ColVis.js
  * Version:     1.1.0-dev
  * CVS:         $Id$
- * Description: Controls for column visiblity in DataTables
+ * Description: Controls for column visibility in DataTables
  * Author:      Allan Jardine (www.sprymedia.co.uk)
  * Created:     Wed Sep 15 18:23:29 BST 2010
  * Modified:    $Date$ by $Author$
@@ -22,10 +22,13 @@
 (function($) {
 
 /**
- * ColVis provides column visiblity control for DataTables
+ * ColVis provides column visibility control for DataTables
+ *
  * @class ColVis
  * @constructor
- * @param {object} DataTables settings object
+ * @param {object} DataTables settings object. With DataTables 1.10 this can
+ *   also be and API instance, table node, jQuery collection or jQuery selector.
+ * @param {object} ColVis configuration options
  */
 var ColVis = function( oDTSettings, oInit )
 {
@@ -40,13 +43,18 @@ var ColVis = function( oDTSettings, oInit )
 		oInit = {};
 	}
 
+	if ( $.fn.dataTable.camelToHungarian ) {
+		$.fn.dataTable.camelToHungarian( ColVis.defaults, oInit );
+	}
+
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Public class variables
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	/**
-	 * @namespace Settings object which contains customisable information for ColVis instance
+	 * @namespace Settings object which contains customisable information for
+	 *     ColVis instance. Augmented by ColVis.defaults
 	 */
 	this.s = {
 		/**
@@ -66,38 +74,6 @@ var ColVis = function( oDTSettings, oInit )
 		"oInit": oInit,
 
 		/**
-		 * Callback function to tell the user when the state has changed
-		 *  @property fnStateChange
-		 *  @type     function
-		 *  @default  null
-		 */
-		"fnStateChange": null,
-
-		/**
-		 * Mode of activation. Can be 'click' or 'mouseover'
-		 *  @property activate
-		 *  @type     String
-		 *  @default  click
-		 */
-		"activate": "click",
-
-		/**
-		 * Position of the collection menu when shown - align "left" or "right"
-		 *  @property sAlign
-		 *  @type     String
-		 *  @default  right
-		 */
-		"sAlign": "left",
-
-		/**
-		 * Text used for the button
-		 *  @property buttonText
-		 *  @type     String
-		 *  @default  Show / hide columns
-		 */
-		"buttonText": "Show / hide columns",
-
-		/**
 		 * Flag to say if the collection is hidden
 		 *  @property hidden
 		 *  @type     boolean
@@ -106,96 +82,12 @@ var ColVis = function( oDTSettings, oInit )
 		"hidden": true,
 
 		/**
-		 * List of columns (integers) which should be excluded from the list
-		 *  @property aiExclude
-		 *  @type     Array
-		 *  @default  []
-		 */
-		"aiExclude": [],
-
-		/**
-		 * Group buttons
-		 *  @property aoGroups
-		 *  @type     Array
-		 *  @default  []
-		 */
-		"aoGroups": [],
-
-		/**
-		 * Store the original viisbility settings so they could be restored
+		 * Store the original visibility settings so they could be restored
 		 *  @property abOriginal
 		 *  @type     Array
 		 *  @default  []
 		 */
-		"abOriginal": [],
-
-		/**
-		 * Show Show-All button
-		 *  @property bShowAll
-		 *  @type     Array
-		 *  @default  []
-		 */
-		"bShowAll": false,
-
-		/**
-		 * Show All button text
-		 *  @property sShowAll
-		 *  @type     String
-		 *  @default  Restore original
-		 */
-		"sShowAll": "Show All",
-
-		/**
-		 * Show restore button
-		 *  @property bRestore
-		 *  @type     Array
-		 *  @default  []
-		 */
-		"bRestore": false,
-
-		/**
-		 * Restore button text
-		 *  @property sRestore
-		 *  @type     String
-		 *  @default  Restore original
-		 */
-		"sRestore": "Restore original",
-
-		/**
-		 * Overlay animation duration in mS
-		 *  @property iOverlayFade
-		 *  @type     Integer
-		 *  @default  500
-		 */
-		"iOverlayFade": 500,
-
-		/**
-		 * Label callback for column names. Takes three parameters: 1. the
-		 * column index, 2. the column title detected by DataTables and 3. the
-		 * TH node for the column
-		 *  @property fnLabel
-		 *  @type     Function
-		 *  @default  null
-		 */
-		"fnLabel": null,
-
-		/**
-		 * Indicate if the column list should be positioned by Javascript,
-		 * visually below the button or allow CSS to do the positioning
-		 *  @property bCssPosition
-		 *  @type     boolean
-		 *  @default  false
-		 */
-		"bCssPosition": false,
-
-		/**
-		 * Button ordering - 'alpha' (alphabetical) or 'column' (table column
-		 * order)
-		 *  @property order
-		 *  @type     string
-		 *  @default  column
-		 */
-		"order": 'column'
+		"abOriginal": []
 	};
 
 
@@ -272,8 +164,11 @@ var ColVis = function( oDTSettings, oInit )
 	ColVis.aInstances.push( this );
 
 	/* Constructor logic */
-	this.s.dt = oDTSettings;
-	this._fnConstruct();
+	this.s.dt = $.fn.dataTable.Api ?
+		new $.fn.dataTable.Api( oDTSettings ).settings()[0] :
+		oDTSettings;
+
+	this._fnConstruct( oInit );
 	return this;
 };
 
@@ -285,21 +180,39 @@ ColVis.prototype = {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	/**
-	 * Rebuild the list of buttons for this instance (i.e. if there is a column header update)
+	 * Get the ColVis instance's control button so it can be injected into the
+	 * DOM
+	 *  @method  button
+	 *  @returns {node} ColVis button
+	 */
+	button: function ()
+	{
+		return this.dom.wrapper;
+	},
+
+	/**
+	 * Alias of `rebuild` for backwards compatibility
 	 *  @method  fnRebuild
-	 *  @returns void
 	 */
 	"fnRebuild": function ()
 	{
+		this.rebuild();
+	},
+
+	/**
+	 * Rebuild the list of buttons for this instance (i.e. if there is a column
+	 * header update)
+	 *  @method  fnRebuild
+	 */
+	rebuild: function ()
+	{
 		/* Remove the old buttons */
-		for ( var i=this.dom.buttons.length-1 ; i>=0 ; i-- )
-		{
+		for ( var i=this.dom.buttons.length-1 ; i>=0 ; i-- ) {
 			this.dom.collection.removeChild( this.dom.buttons[i] );
 		}
 		this.dom.buttons.splice( 0, this.dom.buttons.length );
 
-		if ( this.dom.restore )
-		{
+		if ( this.dom.restore ) {
 			this.dom.restore.parentNode( this.dom.restore );
 		}
 
@@ -312,7 +225,6 @@ ColVis.prototype = {
 	},
 
 
-
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Private methods (they are of course public in JS, but recommended as private)
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -323,9 +235,9 @@ ColVis.prototype = {
 	 *  @returns void
 	 *  @private
 	 */
-	"_fnConstruct": function ()
+	"_fnConstruct": function ( init )
 	{
-		this._fnApplyCustomisation();
+		this._fnApplyCustomisation( init );
 
 		var that = this;
 		var i, iLen;
@@ -378,6 +290,9 @@ ColVis.prototype = {
 
 			that.fnRebuild();
 		} );
+
+		// Set the initial state
+		this._fnDrawCallback();
 	},
 
 
@@ -387,78 +302,31 @@ ColVis.prototype = {
 	 *  @returns void
 	 *  @private
 	 */
-	"_fnApplyCustomisation": function ()
+	"_fnApplyCustomisation": function ( init )
 	{
-		var oConfig = this.s.oInit;
+		$.extend( true, this.s, ColVis.defaults, init );
 
-		if ( typeof oConfig.activate != 'undefined' )
-		{
-			this.s.activate = oConfig.activate;
+		// Slightly messy overlap for the camelCase notation
+		if ( ! this.s.showAll && this.s.bShowAll ) {
+			this.s.showAll = this.s.sShowAll;
 		}
 
-		if ( typeof oConfig.buttonText != 'undefined' )
-		{
-			this.s.buttonText = oConfig.buttonText;
+		if ( ! this.s.restore && this.s.bRestore ) {
+			this.s.restore = this.s.sRestore;
 		}
 
-		if ( typeof oConfig.aiExclude != 'undefined' )
-		{
-			this.s.aiExclude = oConfig.aiExclude;
-		}
-
-		if ( typeof oConfig.bRestore != 'undefined' )
-		{
-			this.s.bRestore = oConfig.bRestore;
-		}
-
-		if ( typeof oConfig.sRestore != 'undefined' )
-		{
-			this.s.sRestore = oConfig.sRestore;
-		}
-
-		if ( typeof oConfig.bShowAll != 'undefined' )
-		{
-			this.s.bShowAll = oConfig.bShowAll;
-		}
-
-		if ( typeof oConfig.sShowAll != 'undefined' )
-		{
-			this.s.sShowAll = oConfig.sShowAll;
-		}
-
-		if ( typeof oConfig.sAlign != 'undefined' )
-		{
-			this.s.sAlign = oConfig.sAlign;
-		}
-
-		if ( typeof oConfig.fnStateChange != 'undefined' )
-		{
-			this.s.fnStateChange = oConfig.fnStateChange;
-		}
-
-		if ( typeof oConfig.iOverlayFade != 'undefined' )
-		{
-			this.s.iOverlayFade = oConfig.iOverlayFade;
-		}
-
-		if ( typeof oConfig.fnLabel != 'undefined' )
-		{
-			this.s.fnLabel = oConfig.fnLabel;
-		}
-
-		if ( typeof oConfig.bCssPosition != 'undefined' )
-		{
-			this.s.bCssPosition = oConfig.bCssPosition;
-		}
-
-		if ( typeof oConfig.aoGroups != 'undefined' )
-		{
-			this.s.aoGroups = oConfig.aoGroups;
-		}
-
-		if ( typeof oConfig.order != 'undefined' )
-		{
-			this.s.order = oConfig.order;
+		// CamelCase to Hungarian for the column groups 
+		var groups = this.s.groups;
+		var hungarianGroups = this.s.aoGroups;
+		if ( groups ) {
+			for ( var i=0, ien=groups.length ; i<ien ; i++ ) {
+				if ( groups[i].title ) {
+					hungarianGroups[i].sTitle = groups[i].title;
+				}
+				if ( groups[i].columns ) {
+					hungarianGroups[i].aiColumns = groups[i].columns;
+				}
+			}
 		}
 	},
 
@@ -580,14 +448,14 @@ ColVis.prototype = {
 			} );
 		}
 
-		if ( this.s.bRestore )
+		if ( this.s.restore )
 		{
 			nButton = this._fnDomRestoreButton();
 			nButton.className += " ColVis_Restore";
 			this.dom.buttons.push( nButton );
 		}
 
-		if ( this.s.bShowAll )
+		if ( this.s.showAll )
 		{
 			nButton = this._fnDomShowAllButton();
 			nButton.className += " ColVis_ShowAll";
@@ -612,7 +480,7 @@ ColVis.prototype = {
 
 		return $(
 				'<li class="ColVis_Special '+(dt.bJUI ? 'ui-button ui-state-default' : '')+'">'+
-					this.s.sRestore+
+					this.s.restore+
 				'</li>'
 			)
 			.click( function (e) {
@@ -641,7 +509,7 @@ ColVis.prototype = {
 
 		return $(
 				'<li class="ColVis_Special '+(dt.bJUI ? 'ui-button ui-state-default' : '')+'">'+
-					this.s.sShowAll+
+					this.s.showAll+
 				'</li>'
 			)
 			.click( function (e) {
@@ -1009,6 +877,123 @@ ColVis.fnRebuild = function ( oTable )
 };
 
 
+ColVis.defaults = {
+	/**
+	 * Mode of activation. Can be 'click' or 'mouseover'
+	 *  @property activate
+	 *  @type     string
+	 *  @default  click
+	 */
+	active: 'click',
+
+	/**
+	 * Text used for the button
+	 *  @property buttonText
+	 *  @type     string
+	 *  @default  Show / hide columns
+	 */
+	buttonText: 'Show / hide columns',
+
+	/**
+	 * List of columns (integers) which should be excluded from the list
+	 *  @property aiExclude
+	 *  @type     array
+	 *  @default  []
+	 */
+	aiExclude: [],
+
+	/**
+	 * Show restore button
+	 *  @property bRestore
+	 *  @type     boolean
+	 *  @default  false
+	 */
+	bRestore: false,
+
+	/**
+	 * Restore button text
+	 *  @property sRestore
+	 *  @type     string
+	 *  @default  Restore original
+	 */
+	sRestore: 'Restore original',
+
+	/**
+	 * Show Show-All button
+	 *  @property bShowAll
+	 *  @type     boolean
+	 *  @default  false
+	 */
+	bShowAll: false,
+
+	/**
+	 * Show All button text
+	 *  @property sShowAll
+	 *  @type     string
+	 *  @default  Restore original
+	 */
+	sShowAll: 'Show All',
+
+	/**
+	 * Position of the collection menu when shown - align "left" or "right"
+	 *  @property sAlign
+	 *  @type     string
+	 *  @default  left
+	 */
+	sAlign: 'left',
+
+	/**
+	 * Callback function to tell the user when the state has changed
+	 *  @property fnStateChange
+	 *  @type     function
+	 *  @default  null
+	 */
+	fnStateChange: null,
+
+	/**
+	 * Overlay animation duration in mS
+	 *  @property iOverlayFade
+	 *  @type     integer|false
+	 *  @default  500
+	 */
+	iOverlayFade: 500,
+
+	/**
+	 * Label callback for column names. Takes three parameters: 1. the
+	 * column index, 2. the column title detected by DataTables and 3. the
+	 * TH node for the column
+	 *  @property fnLabel
+	 *  @type     function
+	 *  @default  null
+	 */
+	fnLabel: null,
+
+	/**
+	 * Indicate if the column list should be positioned by Javascript,
+	 * visually below the button or allow CSS to do the positioning
+	 *  @property bCssPosition
+	 *  @type     boolean
+	 *  @default  false
+	 */
+	bCssPosition: false,
+
+	/**
+	 * Group buttons
+	 *  @property aoGroups
+	 *  @type     array
+	 *  @default  []
+	 */
+	aoGroups: [],
+
+	/**
+	 * Button ordering - 'alpha' (alphabetical) or 'column' (table column
+	 * order)
+	 *  @property order
+	 *  @type     string
+	 *  @default  column
+	 */
+	order: 'column'
+};
 
 
 
@@ -1068,10 +1053,9 @@ if ( typeof $.fn.dataTable == "function" &&
 {
 	$.fn.dataTableExt.aoFeatures.push( {
 		"fnInit": function( oDTSettings ) {
-			var init = (typeof oDTSettings.oInit.oColVis == 'undefined') ?
-				{} : oDTSettings.oInit.oColVis;
-			var oColvis = new ColVis( oDTSettings, init );
-			return oColvis.dom.wrapper;
+			var init = oDTSettings.oInit;
+			var colvis = new ColVis( oDTSettings, init.colVis || init.oColVis || {} );
+			return colvis.button();
 		},
 		"cFeature": "C",
 		"sFeature": "ColVis"
