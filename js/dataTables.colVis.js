@@ -1,11 +1,11 @@
-/*! ColVis 1.1.0
+/*! ColVis 1.1.1-dev
  * ©2010-2014 SpryMedia Ltd - datatables.net/license
  */
 
 /**
  * @summary     ColVis
  * @description Controls for column visibility in DataTables
- * @version     1.1.0
+ * @version     1.1.1-dev
  * @file        dataTables.colReorder.js
  * @author      SpryMedia Ltd (www.sprymedia.co.uk)
  * @contact     www.sprymedia.co.uk/contact
@@ -1039,7 +1039,7 @@ ColVis.prototype.CLASS = "ColVis";
  *  @type      String
  *  @default   See code
  */
-ColVis.VERSION = "1.1.0";
+ColVis.VERSION = "1.1.1-dev";
 ColVis.prototype.VERSION = ColVis.VERSION;
 
 
@@ -1084,7 +1084,11 @@ return ColVis;
 
 // Define as an AMD module if possible
 if ( typeof define === 'function' && define.amd ) {
-	define( 'datatables-colvis', ['jquery', 'datatables'], factory );
+	define( ['jquery', 'datatables'], factory );
+}
+else if ( typeof exports === 'object' ) {
+    // Node/CommonJS
+    factory( require('jquery'), require('datatables') );
 }
 else if ( jQuery && !jQuery.fn.dataTable.ColVis ) {
 	// Otherwise simply initialise as normal, stopping multiple evaluation
