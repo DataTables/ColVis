@@ -1,11 +1,11 @@
-/*! ColVis 1.1.1-dev
+/*! ColVis 1.1.1
  * ©2010-2014 SpryMedia Ltd - datatables.net/license
  */
 
 /**
  * @summary     ColVis
  * @description Controls for column visibility in DataTables
- * @version     1.1.1-dev
+ * @version     1.1.1
  * @file        dataTables.colReorder.js
  * @author      SpryMedia Ltd (www.sprymedia.co.uk)
  * @contact     www.sprymedia.co.uk/contact
@@ -1046,7 +1046,7 @@ ColVis.prototype.CLASS = "ColVis";
  *  @type      String
  *  @default   See code
  */
-ColVis.VERSION = "1.1.1-dev";
+ColVis.VERSION = "1.1.1";
 ColVis.prototype.VERSION = ColVis.VERSION;
 
 
