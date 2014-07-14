@@ -12,7 +12,8 @@ $(document).ready(function() {
 		],
 		colVis: {
 			restore: "Restore",
-			showAll: "Show all"
+			showAll: "Show all",
+			showNone: "Show none"
 		}
 	} );
 } );
@@ -23,7 +24,7 @@ $(document).ready(function() {
 
 <info><![CDATA[
 
-This demo of ColVis shows its ability to add "Restore" and "Show all" buttons to the list of column visibility options. This is done with the `restore` and `showAll` options which can be enabled individually if needed.
+This demo of ColVis shows its ability to add "Restore", "Show all" and "Show none" buttons to the list of column visibility options. This is done with the `restore`, `showAll` and `showNone` options which can be enabled individually if needed.
 
 For full information about the ColVis options, please refer to the [ColVis options documentation](//datatables.net/extensions/colvis/options).
 

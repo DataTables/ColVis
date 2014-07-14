@@ -463,8 +463,15 @@ ColVis.prototype = {
 
 		if ( this.s.showAll )
 		{
-			nButton = this._fnDomShowAllButton();
+			nButton = this._fnDomShowXButton( this.s.showAll, true );
 			nButton.className += " ColVis_ShowAll";
+			this.dom.buttons.push( nButton );
+		}
+
+		if ( this.s.showNone )
+		{
+			nButton = this._fnDomShowXButton( this.s.showNone, false );
+			nButton.className += " ColVis_ShowNone";
 			this.dom.buttons.push( nButton );
 		}
 
@@ -502,12 +509,12 @@ ColVis.prototype = {
 
 
 	/**
-	 * Create a button which allows a "show all" action
-	 *  @method  _fnDomShowAllButton
+	 * Create a button which allows show all and show node actions
+	 *  @method  _fnDomShowXButton
 	 *  @returns {Node} Created button
 	 *  @private
 	 */
-	"_fnDomShowAllButton": function ()
+	"_fnDomShowXButton": function ( str, action )
 	{
 		var
 			that = this,
@@ -515,7 +522,7 @@ ColVis.prototype = {
 
 		return $(
 				'<li class="ColVis_Special '+(dt.bJUI ? 'ui-button ui-state-default' : '')+'">'+
-					this.s.showAll+
+					str+
 				'</li>'
 			)
 			.click( function (e) {
@@ -523,7 +530,7 @@ ColVis.prototype = {
 				{
 					if (that.s.aiExclude.indexOf(i) === -1)
 					{
-						that.s.dt.oInstance.fnSetColumnVis( i, true, false );
+						that.s.dt.oInstance.fnSetColumnVis( i, action, false );
 					}
 				}
 				that._fnAdjustOpenRows();
