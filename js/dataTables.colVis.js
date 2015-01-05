@@ -219,6 +219,7 @@ ColVis.prototype = {
 			this.dom.collection.removeChild( this.dom.buttons[i] );
 		}
 		this.dom.buttons.splice( 0, this.dom.buttons.length );
+		this.dom.groupButtons.splice(0, this.dom.groupButtons.length);
 
 		if ( this.dom.restore ) {
 			this.dom.restore.parentNode( this.dom.restore );
