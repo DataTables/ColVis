@@ -610,7 +610,10 @@ ColVis.prototype = {
 				var showHide = !$('input', this).is(":checked");
 				if (  e.target.nodeName.toLowerCase() !== "li" )
 				{
-					showHide = ! showHide;
+					if ( e.target.nodeName.toLowerCase() == "input" || that.s.fnStateChange === null )
+					{
+						showHide = ! showHide;
+					}
 				}
 
 				/* Need to consider the case where the initialiser created more than one table - change the
@@ -637,8 +640,12 @@ ColVis.prototype = {
 
 				$.fn.dataTableExt.iApiIndex = oldIndex; /* Restore */
 
-				if ( e.target.nodeName.toLowerCase() === 'input' && that.s.fnStateChange !== null )
+				if ( that.s.fnStateChange !== null )
 				{
+					if ( e.target.nodeName.toLowerCase() == "span" )
+					{
+						e.preventDefault();
+					}
 					that.s.fnStateChange.call( that, i, showHide );
 				}
 			} )[0];
