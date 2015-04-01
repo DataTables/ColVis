@@ -1,15 +1,15 @@
-/*! ColVis 1.1.2-dev
- * ©2010-2014 SpryMedia Ltd - datatables.net/license
+/*! ColVis 1.1.2
+ * ©2010-2015 SpryMedia Ltd - datatables.net/license
  */
 
 /**
  * @summary     ColVis
  * @description Controls for column visibility in DataTables
- * @version     1.1.2-dev
+ * @version     1.1.2
  * @file        dataTables.colReorder.js
  * @author      SpryMedia Ltd (www.sprymedia.co.uk)
  * @contact     www.sprymedia.co.uk/contact
- * @copyright   Copyright 2010-2014 SpryMedia Ltd.
+ * @copyright   Copyright 2010-2015 SpryMedia Ltd.
  *
  * This source file is free software, available under the following license:
  *   MIT license - http://datatables.net/license/mit
@@ -1062,7 +1062,7 @@ ColVis.prototype.CLASS = "ColVis";
  *  @type      String
  *  @default   See code
  */
-ColVis.VERSION = "1.1.2-dev";
+ColVis.VERSION = "1.1.2";
 ColVis.prototype.VERSION = ColVis.VERSION;
 
 
