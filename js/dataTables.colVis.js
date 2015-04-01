@@ -891,7 +891,9 @@ ColVis.fnRebuild = function ( oTable )
 	var nTable = null;
 	if ( typeof oTable != 'undefined' )
 	{
-		nTable = oTable.fnSettings().nTable;
+		nTable = $.fn.dataTable.Api ?
+			new $.fn.dataTable.Api( oTable ).table().node() :
+			oTable.fnSettings().nTable;
 	}
 
 	for ( var i=0, iLen=ColVis.aInstances.length ; i<iLen ; i++ )
