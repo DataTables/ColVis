@@ -289,7 +289,7 @@ ColVis.prototype = {
 		/* If columns are reordered, then we need to update our exclude list and
 		 * rebuild the displayed list
 		 */
-		$(this.s.dt.oInstance).bind( 'column-reorder', function ( e, oSettings, oReorder ) {
+		$(this.s.dt.oInstance).bind( 'column-reorder.dt', function ( e, oSettings, oReorder ) {
 			for ( i=0, iLen=that.s.aiExclude.length ; i<iLen ; i++ ) {
 				that.s.aiExclude[i] = oReorder.aiInvertMapping[ that.s.aiExclude[i] ];
 			}
@@ -298,6 +298,10 @@ ColVis.prototype = {
 			that.s.abOriginal.splice( oReorder.iTo, 0, mStore );
 
 			that.fnRebuild();
+		} );
+
+		$(this.s.dt.oInstance).bind( 'destroy.dt', function () {
+			$(that.dom.wrapper).remove();
 		} );
 
 		// Set the initial state
