@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dt-example table-type="html" order="1">
 
-<css lib="datatables colvis" />
-<js lib="jquery datatables colvis">
+<css lib="datatables buttons colvis" />
+<js lib="jquery datatables buttons colvis">
 <![CDATA[
 $(document).ready(function() {
 	$('#example').DataTable( {
-		dom: 'C<"clear">lfrtip'
+		dom: 'Bfrtip',
+		buttons: [
+			'columnsToggle'
+		]
 	} );
 } );
 ]]>
