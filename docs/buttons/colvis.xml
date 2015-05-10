@@ -17,7 +17,7 @@
 			Show the collection
 		</parameter>
 
-		<parameter name="columns" value="" type="column-selector"/>
+		<parameter name="columns" value="undefined" type="column-selector"/>
 	</defaults>
 
 	<extend>collection</extend>

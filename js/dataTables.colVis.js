@@ -52,7 +52,7 @@ $.extend( DataTable.ext.buttons, {
 		var columns = dt.columns( conf.columns ).indexes().map( function ( idx ) {
 			return {
 				extend: 'columnToggle',
-				column: idx
+				columns: idx
 			};
 		} ).toArray();
 
@@ -62,7 +62,7 @@ $.extend( DataTable.ext.buttons, {
 	columnToggle: function ( dt, conf ) {
 		return {
 			extend: 'columnVisibility',
-			column: conf.column
+			columns: conf.columns
 		};
 	},
 
@@ -70,7 +70,7 @@ $.extend( DataTable.ext.buttons, {
 		var columns = dt.columns( conf.columns ).indexes().map( function ( idx ) {
 			return {
 				extend: 'columnVisibility',
-				column: idx,
+				columns: idx,
 				visibility: conf.visibility
 			};
 		} ).toArray();
@@ -79,13 +79,13 @@ $.extend( DataTable.ext.buttons, {
 	},
 
 	columnVisibility: {
-		column: null, // column selector
+		columns: null, // column selector
 		text: function ( dt, button, conf ) {
-			return $(dt.column( conf.column ).header()).text();
+			return $(dt.column( conf.columns ).header()).text();
 		},
 		className: 'buttons-columnVisibility',
 		action: function ( e, dt, button, conf ) {
-			var col = dt.column( conf.column );
+			var col = dt.column( conf.columns );
 
 			col.visible( conf.visibility !== undefined ?
 				conf.visibility :
@@ -94,10 +94,10 @@ $.extend( DataTable.ext.buttons, {
 		},
 		init: function ( dt, button, conf ) {
 			var that = this;
-			var col = dt.column( conf.column );
+			var col = dt.column( conf.columns );
 
 			dt.on( 'column-visibility.dt'+conf.namespace, function (e, settings, column, state) {
-				if ( column === conf.column ) {
+				if ( column === conf.columns ) {
 					that.active( state );
 				}
 			} );
