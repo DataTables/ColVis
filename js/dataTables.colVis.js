@@ -37,7 +37,10 @@ $.extend( DataTable.ext.buttons, {
 	colvis: function ( dt, conf ) {
 		return {
 			extend: 'collection',
-			text: 'Column visibility',
+			text: function ( dt ) {
+				return dt.i18n( 'buttons.colvis', 'Column visibility' );
+			},
+			className: 'buttons-collection buttons-colvis',
 			buttons: [ {
 				extend: 'columnsToggle',
 				columns: conf.columns
@@ -80,6 +83,7 @@ $.extend( DataTable.ext.buttons, {
 		text: function ( dt, button, conf ) {
 			return $(dt.column( conf.column ).header()).text();
 		},
+		className: 'buttons-columnVisibility',
 		action: function ( e, dt, button, conf ) {
 			var col = dt.column( conf.column );
 
