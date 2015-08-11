@@ -1,3 +1,10 @@
+# Important - this is retired software
+
+Please note that ColVis has now been retired and replaced by the [Buttons extension](//datatables.net/extensions/buttons) which offers significant improvements and consistent styling and API integration with the rest of DataTables and the other extensions.
+
+It is strongly recommended that you upgrade is possible to Buttons with its column visibility module, and not to use ColVis in any new projects.
+
+
 # ColVis
 
 ColVis adds a button to the toolbars around DataTables which gives the end user of the table the ability to dynamically change the visibility of the columns in the table:
