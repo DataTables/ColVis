@@ -1,0 +1,1 @@
+ColVis has now been retired and replaced by the Buttons extension for DataTables: https://datatables.net/extensions . ColVis is no longer being developed in favour of its replacement.
